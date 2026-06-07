@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PreLoved Baby: Start PHP Server",
+      "type": "shell",
+      "command": "./start-server.sh",
+      "options": {
+        "cwd": "${workspaceFolder}/prelovedbaby"
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "focus": true
+      },
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login | PreLoved Baby</title>
+  <link rel="icon" href="../assets/images/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/bootstrap-icons.min.css">
+  <link href="../assets/sass/style.css" rel="stylesheet">
+  <link href="../assets/css/admin.css" rel="stylesheet">
+</head>
+<body class="admin-body d-flex align-items-center justify-content-center p-3">
+  <div class="admin-login-card card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4 p-md-5">
+      <div class="text-center mb-4">
+        <span class="logo-text fs-4 fw-semibold">PreLoved Baby</span>
+        <p class="text-body-secondary mb-0 mt-2">Admin sign in</p>
+      </div>
+      <form action="login.php">
+        <div class="mb-3">
+          <label for="adminEmail" class="form-label">Email</label>
+          <input type="email" class="form-control form-control-lg border-2" id="adminEmail" placeholder="admin@prelovedbaby.co.za" required>
+        </div>
+        <div class="mb-4">
+          <label for="adminPassword" class="form-label">Password</label>
+          <input type="password" class="form-control form-control-lg border-2" id="adminPassword" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-dark btn-lg w-100 rounded-3">Sign in to dashboard</button>
+      </form>
+      <div class="text-center mt-4">
+        <a href="../index.html" class="text-decoration-none font-14">Back to marketplace</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

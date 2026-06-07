@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Dashboard | PreLoved Baby</title>
+  <link rel="icon" href="../assets/images/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/bootstrap-icons.min.css">
+  <link href="../assets/sass/style.css" rel="stylesheet">
+  <link href="../assets/css/admin.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+  <div class="admin-shell d-flex">
+    <aside class="admin-sidebar p-3 p-lg-4">
+      <div class="mb-4">
+        <a href="index.html" class="text-decoration-none">
+          <span class="logo-text fs-5 fw-semibold">PreLoved Baby</span>
+        </a>
+        <p class="text-white-50 small mb-0 mt-1">Admin panel</p>
+      </div>
+
+      <nav class="d-flex flex-column gap-1">
+        <a href="index.php" class="admin-nav-link active"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="products.php" class="admin-nav-link"><i class="bi bi-grid"></i> Products</a>
+        <a href="users.php" class="admin-nav-link"><i class="bi bi-people"></i> Users</a>
+        <a href="roles.php" class="admin-nav-link"><i class="bi bi-shield-lock"></i> Roles &amp; RBAC</a>
+        <a href="../index.php" class="admin-nav-link mt-2"><i class="bi bi-box-arrow-up-right"></i> View site</a>
+        <a href="login.php" class="admin-nav-link"><i class="bi bi-box-arrow-right"></i> Log in</a>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar px-3 px-lg-4 py-3">
+        <div class="d-flex align-items-center justify-content-between gap-3">
+          <div>
+            <h1 class="h4 mb-0">Dashboard</h1>
+            <p class="text-body-secondary mb-0 font-14">Overview of marketplace activity</p>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge text-bg-success">Live</span>
+            <span class="text-body-secondary font-14">Admin</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="p-3 p-lg-4">
+        <div class="row g-3 g-lg-4 mb-4">
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card admin-stat-card rounded-4 h-100">
+              <div class="card-body d-flex align-items-center gap-3">
+                <span class="admin-stat-icon bg-primary-subtle text-primary"><i class="bi bi-grid"></i></span>
+                <div>
+                  <p class="text-body-secondary mb-1 font-14">Active listings</p>
+                  <h3 class="mb-0">128</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card admin-stat-card rounded-4 h-100">
+              <div class="card-body d-flex align-items-center gap-3">
+                <span class="admin-stat-icon bg-warning-subtle text-warning"><i class="bi bi-hourglass-split"></i></span>
+                <div>
+                  <p class="text-body-secondary mb-1 font-14">Pending orders</p>
+                  <h3 class="mb-0">14</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card admin-stat-card rounded-4 h-100">
+              <div class="card-body d-flex align-items-center gap-3">
+                <span class="admin-stat-icon bg-success-subtle text-success"><i class="bi bi-shop"></i></span>
+                <div>
+                  <p class="text-body-secondary mb-1 font-14">Registered sellers</p>
+                  <h3 class="mb-0">56</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="card admin-stat-card rounded-4 h-100">
+              <div class="card-body d-flex align-items-center gap-3">
+                <span class="admin-stat-icon bg-info-subtle text-info"><i class="bi bi-person-check"></i></span>
+                <div>
+                  <p class="text-body-secondary mb-1 font-14">Total users</p>
+                  <h3 class="mb-0">312</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 g-lg-4">
+          <div class="col-12 col-xl-8">
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <h2 class="h5 mb-0">Recent listings</h2>
+                  <a href="../shop-grid-left-sidebar.html" class="btn btn-sm btn-outline-dark">View all</a>
+                </div>
+                <div class="table-responsive">
+                  <table class="table align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Seller</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Medela Breast Pump</td>
+                        <td>Lerato N.</td>
+                        <td>Breast Pumps</td>
+                        <td>R 2,800</td>
+                        <td><span class="badge text-bg-success">Live</span></td>
+                      </tr>
+                      <tr>
+                        <td>Chicco Compact Pram</td>
+                        <td>Sarah M.</td>
+                        <td>Prams &amp; Strollers</td>
+                        <td>R 4,500</td>
+                        <td><span class="badge text-bg-success">Live</span></td>
+                      </tr>
+                      <tr>
+                        <td>Group 0+ Car Seat</td>
+                        <td>Thabo M.</td>
+                        <td>Car Seats</td>
+                        <td>R 3,500</td>
+                        <td><span class="badge text-bg-warning">Review</span></td>
+                      </tr>
+                      <tr>
+                        <td>Wooden Baby Cot</td>
+                        <td>Nadia P.</td>
+                        <td>Nursery Furniture</td>
+                        <td>R 2,400</td>
+                        <td><span class="badge text-bg-success">Live</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-3 mb-xl-4">
+              <div class="card-body p-4">
+                <h2 class="h5 mb-3">Quick actions</h2>
+                <div class="d-grid gap-2">
+                  <a href="../auth-register.html" class="btn btn-dark rounded-3">Add seller</a>
+                  <a href="../shop-grid-left-sidebar.html" class="btn btn-outline-dark rounded-3">Review listings</a>
+                  <a href="../account-orders.html" class="btn btn-outline-dark rounded-3">Manage orders</a>
+                  <a href="../contact-us.html" class="btn btn-outline-dark rounded-3">View messages</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+              <div class="card-body p-4">
+                <h2 class="h5 mb-3">Needs attention</h2>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <span>Listings awaiting review</span>
+                    <span class="badge text-bg-warning rounded-pill">3</span>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <span>Open support tickets</span>
+                    <span class="badge text-bg-danger rounded-pill">2</span>
+                  </li>
+                  <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                    <span>Orders to dispatch</span>
+                    <span class="badge text-bg-primary rounded-pill">14</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

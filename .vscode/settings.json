@@ -1,0 +1,8 @@
+{
+  "liveServer.settings.root": "/documentation",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "files.associations": {
+    "*.php": "php"
+  }
+}
