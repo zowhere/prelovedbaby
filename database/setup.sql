@@ -1,4 +1,5 @@
 -- Drop child tables before parents (FK-safe order)
+DROP TABLE IF EXISTS page_views;
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS product_categories;
 DROP TABLE IF EXISTS orders;
@@ -107,6 +108,17 @@ CREATE TABLE order_items (
   price DECIMAL(10, 2) NOT NULL,
   FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
   FOREIGN KEY (product_id) REFERENCES products (id)
+);
+
+CREATE TABLE page_views (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  session_id VARCHAR(64) NOT NULL,
+  page_path VARCHAR(255) NOT NULL,
+  referrer_source VARCHAR(80) NOT NULL DEFAULT 'direct',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_page_views_created (created_at),
+  INDEX idx_page_views_session (session_id),
+  INDEX idx_page_views_path (page_path)
 );
 
 INSERT INTO permissions (name, slug, module) VALUES

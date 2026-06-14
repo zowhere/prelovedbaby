@@ -10,3 +10,8 @@ if (str_starts_with($appRoot, $docRoot)) {
         $siteBase = rtrim($relative, '/') . '/';
     }
 }
+
+if (PHP_SAPI !== 'cli') {
+    require_once APP_ROOT . '/lib/analytics.php';
+    trackPageView();
+}

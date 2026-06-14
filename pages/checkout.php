@@ -184,24 +184,24 @@ $isFakeStripe = isFakeStripeEnabled();
                         </div>
                         <div class="collapse show" id="collapseCardDetails">
                           <div class="mt-3">
-                            <p class="mb-0">Pay securely by card<?= $isFakeStripe ? ' (demo mode — no real charge)' : '' ?>. Your order will be processed once payment is confirmed.</p>
+                            <p class="mb-0"><?= $isFakeStripe ? 'Demo mode — no real charge. Any card details will work.' : 'Pay securely by card. Your order will be processed once payment is confirmed.' ?></p>
                               <div class="card-details mt-3">
                                 <div class="row g-4">
                                   <div class="col-12 col-lg-12">
                                     <label for="Nameoncard" class="form-label">Name on card</label>
-                                    <input type="text" class="form-control form-control-lg border-2" id="Nameoncard" name="name_on_card" placeholder="Name on card" required>
+                                    <input type="text" class="form-control form-control-lg border-2" id="Nameoncard" name="name_on_card" placeholder="Name on card" value="<?= $isFakeStripe ? htmlspecialchars(trim($checkoutFirstName . ' ' . $checkoutLastName) ?: 'Demo Customer') : '' ?>"<?= $isFakeStripe ? '' : ' required' ?>>
                                   </div>
                                   <div class="col-12 col-lg-12">
                                     <label for="CardNumbers" class="form-label">Card number</label>
-                                    <input type="text" class="form-control form-control-lg border-2" id="CardNumbers" name="card_number" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number" required>
+                                    <input type="text" class="form-control form-control-lg border-2" id="CardNumbers" name="card_number" placeholder="<?= $isFakeStripe ? 'Any number works' : '4242 4242 4242 4242' ?>" value="<?= $isFakeStripe ? '4242 4242 4242 4242' : '' ?>" inputmode="numeric" autocomplete="cc-number"<?= $isFakeStripe ? '' : ' required' ?>>
                                   </div>
                                   <div class="col-12 col-lg-6">
                                     <label for="Date" class="form-label">Expiry date</label>
-                                    <input type="date" class="form-control form-control-lg border-2" id="Date" name="expiry" required>
+                                    <input type="date" class="form-control form-control-lg border-2" id="Date" name="expiry" value="<?= $isFakeStripe ? date('Y-m-d', strtotime('+1 year')) : '' ?>"<?= $isFakeStripe ? '' : ' required' ?>>
                                   </div>
                                   <div class="col-12 col-lg-6">
                                     <label for="CVV" class="form-label">CVV</label>
-                                    <input type="text" class="form-control form-control-lg border-2" id="CVV" name="cvv" placeholder="CVV" inputmode="numeric" autocomplete="cc-csc" required>
+                                    <input type="text" class="form-control form-control-lg border-2" id="CVV" name="cvv" placeholder="CVV" value="<?= $isFakeStripe ? '123' : '' ?>" inputmode="numeric" autocomplete="cc-csc"<?= $isFakeStripe ? '' : ' required' ?>>
                                   </div>
                                   <div class="col-12 col-lg-12">
                                     <div class="form-check">
