@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/bootstrap.php';
 
-require_once __DIR__ . '/includes/db.php';
+require_once APP_ROOT . '/lib/db.php';
 
-$config = require __DIR__ . '/includes/config.php';
+$config = require __DIR__ . '/config/config.php';
 $error = null;
 $seedUsers = [
     [
@@ -87,7 +88,7 @@ try {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Setup database · PreLoved Baby</title>
-  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
   <div class="container py-5">
@@ -98,7 +99,7 @@ try {
             <h1 class="h4 mb-3">Database setup</h1>
             <?php if ($error): ?>
               <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-              <p class="mb-0 small text-muted">Start MySQL, then check <code>includes/config.php</code>.</p>
+              <p class="mb-0 small text-muted">Start MySQL, then check <code>config/config.php</code>.</p>
             <?php else: ?>
               <div class="alert alert-success">Database ready with RBAC roles, permissions, users, products and orders tables.</div>
               <div class="alert alert-info mb-0">

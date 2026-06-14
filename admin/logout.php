@@ -1,7 +1,3 @@
 <?php
-
-require_once __DIR__ . '/../includes/auth.php';
-
-logoutUser();
-header('Location: login.php');
-exit;
+require_once __DIR__ . '/../bootstrap.php';
+require APP_ROOT . '/modules/admin/views/logout.php';
