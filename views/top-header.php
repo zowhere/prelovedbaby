@@ -1,6 +1,5 @@
 <?php
 $siteBase = $siteBase ?? '';
-$inAdmin = $inAdmin ?? false;
 ?>
 <header class="top-header py-2">
   <div class="top-strip d-flex align-items-center gap-4 container px-3">
@@ -15,11 +14,6 @@ $inAdmin = $inAdmin ?? false;
         <li class="nav-item">
           <a class="nav-link py-1" href="<?= htmlspecialchars($siteBase) ?>about-us.php">Buyer Protection</a>
         </li>
-        <?php if (!$inAdmin) : ?>
-        <li class="nav-item ms-lg-2">
-          <a class="btn btn-sm btn-outline-light rounded-3 px-3 py-1" href="<?= htmlspecialchars($siteBase) ?>admin/index.php">Admin</a>
-        </li>
-        <?php endif; ?>
       </ul>
     </div>
     <div class="d-flex align-items-center gap-2 ms-lg-auto">

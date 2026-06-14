@@ -20,31 +20,8 @@
     
   <?php include APP_ROOT . '/views/top-header.php'; ?>
 
-<nav class="navbar navbar-expand-xl border-bottom py-3">
-    <div class="container px-3">
-      <a class="navbar-brand d-none d-xl-flex" href="index.php"><span class="logo-text">PreLoved Baby</span></a>
-      <button type="button" class="d-xl-none btn-menu-close" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"><i class="bi bi-list"></i></button>
-      <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
-        <div class="offcanvas-header">
-          <span class="logo-text">PreLoved Baby</span>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body p-0">
-          <ul class="navbar-nav mx-auto gap-0 gap-xl-2">
-            <li class="nav-item"><a class="nav-link" href="index.php"><span class="parent-menu-name">Home</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="shop-grid-left-sidebar.php"><span class="parent-menu-name">Browse Listings</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="about-us.php"><span class="parent-menu-name">About</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="contact-us.php"><span class="parent-menu-name">Contact</span></a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="right-links nav gap-2 d-flex">
-        <a class="nav-link" href="javascript:;" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="bi bi-search"></i></a>
-        <a class="nav-link" href="account-my-profile.php"><i class="bi bi-person-circle"></i></a>
-        <a class="nav-link position-relative" data-bs-toggle="offcanvas" href="#offcanvasCart"><?php include APP_ROOT . '/views/cart-nav-badge.php'; ?></a>
-      </div>
-    </div>
-  </nav>
+  <?php include APP_ROOT . '/views/site-navbar.php'; ?>
+
 
   <main class="main-content">
     <section class="section-breadcrumb bg-img-page-header d-flex align-items-center justify-content-center">

@@ -1,6 +1,7 @@
 <?php
 
 require_once APP_ROOT . '/lib/auth.php';
+require_once APP_ROOT . '/lib/rbac.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? '';
 $redirect = basename($_POST['redirect'] ?? $_GET['redirect'] ?? 'account-my-profile.php');
@@ -49,6 +50,11 @@ try {
 
         if ($error) {
             header('Location: auth-login.php?error=' . urlencode($error));
+            exit;
+        }
+
+        if (can('dashboard.view')) {
+            header('Location: admin/index.php');
             exit;
         }
 
