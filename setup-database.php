@@ -40,6 +40,7 @@ try {
     $pdo->exec("USE `$db`");
     $pdo->exec(file_get_contents(__DIR__ . '/database/setup.sql'));
     $pdo->exec(file_get_contents(__DIR__ . '/database/sample-data.sql'));
+    $pdo->exec("UPDATE products SET image = REPLACE(image, 'assets/', '') WHERE image LIKE 'assets/%'");
 
     $stmt = $pdo->prepare(
         'INSERT INTO users (name, email, password_hash, role_id, is_active) VALUES (?, ?, ?, ?, 1)
@@ -109,7 +110,7 @@ try {
                 <code>manager@prelovedbaby.co.za</code> / <code>Manager123</code>
               </div>
               <a href="admin/login.php" class="btn btn-dark mt-3 me-2">Go to admin</a>
-              <a href="auth-login.php" class="btn btn-outline-dark mt-3">Storefront login</a>
+              <a href="pages/auth/login.php" class="btn btn-outline-dark mt-3">Storefront login</a>
             <?php endif; ?>
           </div>
         </div>

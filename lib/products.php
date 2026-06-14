@@ -15,7 +15,7 @@ $products = [
         'age' => '0-6 months',
         'categories' => ['Prams & Strollers', 'Travel & Sleep'],
         'listing_id' => 'PLB-584726',
-        'url' => 'product-detail.php?id=chicco-pram',
+        'url' => 'pages/product-detail.php?id=chicco-pram',
         'short_desc' => 'Chicco compact pram, used for four months. Folds flat, canopy and harness in good nick. Rain cover and cup holder included.',
         'description' => 'Chicco compact pram, used for four months. Folds flat, canopy and harness in good nick. Rain cover and cup holder included.',
         'details' => [
@@ -40,7 +40,7 @@ $products = [
         'age' => 'N/A',
         'categories' => ['Breast Pumps', 'Feeding'],
         'listing_id' => 'PLB-591204',
-        'url' => 'product-detail.php?id=breast-pump',
+        'url' => 'pages/product-detail.php?id=breast-pump',
         'short_desc' => 'Medela electric pump, used for three months with my second. All parts there, cleaned and packed in the original bag.',
         'description' => 'Medela electric pump, used for three months with my second. All parts there, cleaned and packed in the original bag.',
         'details' => [
@@ -65,7 +65,7 @@ $products = [
         'age' => '0-3 years',
         'categories' => ['Nursery Furniture', 'Sleep'],
         'listing_id' => 'PLB-578901',
-        'url' => 'product-detail.php?id=baby-cot',
+        'url' => 'pages/product-detail.php?id=baby-cot',
         'short_desc' => 'Stokke wooden cot. Both kids slept in it. One scuff on the side rail, shown in photos. Mattress included.',
         'description' => 'Stokke wooden cot. Both kids slept in it. One scuff on the side rail, shown in photos. Mattress included.',
         'details' => [
@@ -90,7 +90,7 @@ $products = [
         'age' => 'Birth to 13 kg',
         'categories' => ['Car Seats', 'Travel'],
         'listing_id' => 'PLB-602118',
-        'url' => 'product-detail.php?id=car-seat',
+        'url' => 'pages/product-detail.php?id=car-seat',
         'short_desc' => 'Nuna Group 0+ seat, never been in an accident. Isofix base and rain cover included.',
         'description' => 'Nuna Group 0+ seat, never been in an accident. Isofix base and rain cover included.',
         'details' => [
@@ -115,7 +115,7 @@ $products = [
         'age' => '6 months+',
         'categories' => ['High Chairs', 'Feeding'],
         'listing_id' => 'PLB-595447',
-        'url' => 'product-detail.php?id=high-chair',
+        'url' => 'pages/product-detail.php?id=high-chair',
         'short_desc' => 'Chicco high chair that converts to a booster. Tray comes off for cleaning. Straps a bit faded but everything works.',
         'description' => 'Chicco high chair that converts to a booster. Tray comes off for cleaning. Straps a bit faded but everything works.',
         'details' => [
@@ -130,7 +130,7 @@ $products = [
         'brand' => 'Bugaboo',
         'name' => 'Bugaboo Fox 5 Stroller',
         'price' => 12500,
-        'image' => 'images/gallery/product-images/01.png',
+        'image' => 'images/gallery/deals/featured-bugaboo-stroller.jpg',
         'condition' => 'Good',
         'seller' => 'Kate W.',
         'seller_rating' => 4.8,
@@ -140,7 +140,7 @@ $products = [
         'age' => '0-4 years',
         'categories' => ['Prams & Strollers', 'Travel & Sleep'],
         'listing_id' => 'PLB-610882',
-        'url' => 'product-detail.php?id=bugaboo-fox',
+        'url' => 'pages/product-detail.php?id=bugaboo-fox',
         'short_desc' => 'Bugaboo Fox 5 with bassinet. One child, kept indoors. Bassinet, rain cover and cup holder included.',
         'description' => 'Bugaboo Fox 5 with bassinet. One child, kept indoors. Bassinet, rain cover and cup holder included.',
         'details' => [

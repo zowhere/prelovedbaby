@@ -22,7 +22,7 @@ INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_co
     'Like New',
     'Sandton, Johannesburg',
     'Chicco compact pram, used for four months. Folds flat, canopy and harness in good nick.',
-    'assets/images/gallery/products/recommended/chicco-pram.png',
+    'images/gallery/products/recommended/chicco-pram.png',
     'live'
   ),
   (
@@ -35,7 +35,7 @@ INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_co
     'Like New',
     'Sea Point, Cape Town',
     'Medela electric pump, used for three months. All parts included and cleaned.',
-    'assets/images/gallery/products/recommended/breast-pump.png',
+    'images/gallery/products/recommended/breast-pump.png',
     'live'
   ),
   (
@@ -48,7 +48,7 @@ INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_co
     'Good',
     'Umhlanga, Durban',
     'Stokke wooden cot. Mattress included. One scuff on the side rail.',
-    'assets/images/gallery/products/recommended/baby-cot.png',
+    'images/gallery/products/recommended/baby-cot.png',
     'live'
   ),
   (
@@ -61,7 +61,7 @@ INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_co
     'Like New',
     'Centurion, Pretoria',
     'Nuna Group 0+ seat, never been in an accident. Isofix base included.',
-    'assets/images/gallery/products/recommended/car-seat.jpg',
+    'images/gallery/products/recommended/car-seat.jpg',
     'review'
   ),
   (
@@ -74,7 +74,7 @@ INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_co
     'Good',
     'Rosebank, Johannesburg',
     'Chicco high chair that converts to a booster. Tray comes off for cleaning.',
-    'assets/images/gallery/products/recommended/high-chair.png',
+    'images/gallery/products/recommended/high-chair.png',
     'live'
   ),
   (
@@ -87,7 +87,7 @@ INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_co
     'Good',
     'Gardens, Cape Town',
     'Bugaboo Fox 5 with bassinet. One child, kept indoors.',
-    'assets/images/gallery/product-images/01.png',
+    'images/gallery/deals/featured-bugaboo-stroller.jpg',
     'live'
   )
 ON DUPLICATE KEY UPDATE

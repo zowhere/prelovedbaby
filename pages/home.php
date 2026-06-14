@@ -1,3 +1,6 @@
+<?php
+require_once dirname(__DIR__) . '/bootstrap.php';
+?>
 <!doctype html>
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
@@ -19,21 +22,21 @@
     
     <link
       rel="stylesheet"
-      href="plugins/swiper/css/swiper-bundle.min.css"
+      href="<?= htmlspecialchars($siteBase) ?>plugins/swiper/css/swiper-bundle.min.css"
     />
 
     
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/bootstrap-icons.min.css" />
+    <link href="<?= htmlspecialchars($siteBase) ?>css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="<?= htmlspecialchars($siteBase) ?>css/bootstrap-icons.min.css" />
     
-    <link href="css/sass/style.css" rel="stylesheet" />
+    <link href="<?= htmlspecialchars($siteBase) ?>css/sass/style.css" rel="stylesheet" />
   </head>
 
   <body>
     
-    <?php include APP_ROOT . '/views/top-header.php'; ?>
+    <?php include APP_ROOT . '/views/header.php'; ?>
 
-  <?php include APP_ROOT . '/views/site-navbar.php'; ?>
+  <?php include APP_ROOT . '/views/navbar.php'; ?>
 
 
     <section class="main-slider-wrapper">
@@ -51,7 +54,7 @@
                 </h2>
                 <div class="slide-btn mt-lg-5">
                   <a
-                    href="shop-grid-left-sidebar.php"
+                    href="<?= htmlspecialchars($siteBase) ?>pages/shop.php"
                     class="btn btn-dark px-md-5 py-md-3 rounded-5"
                   >
                     Browse Listings
@@ -60,7 +63,7 @@
               </div>
             </div>
             <img
-              src="images/gallery/slider/slide-1.png"
+              src="<?= htmlspecialchars($siteBase) ?>images/gallery/slider/slide-1.png"
               class="img-fluid rounded-0"
               alt="Preloved Baby Essentials"
             />
@@ -82,7 +85,7 @@
 
                 <div class="slide-btn mt-lg-5">
                   <a
-                    href="shop-grid-left-sidebar.php"
+                    href="<?= htmlspecialchars($siteBase) ?>pages/shop.php"
                     class="btn btn-dark px-md-5 py-md-3 rounded-5"
                   >
                     Browse Listings
@@ -92,7 +95,7 @@
             </div>
 
             <img
-              src="images/gallery/slider/slide-2.png"
+              src="<?= htmlspecialchars($siteBase) ?>images/gallery/slider/slide-2.png"
               class="img-fluid rounded-0"
               alt="Baby Nursery Essentials"
             />
@@ -115,7 +118,7 @@
 
                 <div class="slide-btn mt-lg-5">
                   <a
-                    href="shop-grid-left-sidebar.php"
+                    href="<?= htmlspecialchars($siteBase) ?>pages/shop.php"
                     class="btn btn-dark px-md-5 py-md-3 rounded-5"
                   >
                     Browse Listings
@@ -125,7 +128,7 @@
             </div>
 
             <img
-              src="images/gallery/slider/slide-3.png"
+              src="<?= htmlspecialchars($siteBase) ?>images/gallery/slider/slide-3.png"
               class="img-fluid rounded-0"
               alt="Buy and Sell Baby Products"
             />
@@ -148,7 +151,7 @@
 
                 <div class="slide-btn mt-lg-5">
                   <a
-                    href="shop-grid-left-sidebar.php"
+                    href="<?= htmlspecialchars($siteBase) ?>pages/shop.php"
                     class="btn btn-dark px-md-5 py-md-3 rounded-5"
                   >
                     Browse Listings
@@ -158,7 +161,7 @@
             </div>
 
             <img
-              src="images/gallery/slider/slide-4.png"
+              src="<?= htmlspecialchars($siteBase) ?>images/gallery/slider/slide-4.png"
               class="img-fluid rounded-0"
               alt="Affordable Baby Essentials"
             />
@@ -181,7 +184,7 @@
 
                 <div class="slide-btn mt-lg-5">
                   <a
-                    href="shop-grid-left-sidebar.php"
+                    href="<?= htmlspecialchars($siteBase) ?>pages/shop.php"
                     class="btn btn-dark px-md-5 py-md-3 rounded-5"
                   >
                     Browse Listings
@@ -191,7 +194,7 @@
             </div>
 
             <img
-              src="images/gallery/slider/slide-5.png"
+              src="<?= htmlspecialchars($siteBase) ?>images/gallery/slider/slide-5.png"
               class="img-fluid rounded-0"
               alt="Nursery and Baby Gear"
             />
@@ -229,10 +232,10 @@
             <div class="swiper categories-slider">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                  <a href="shop-grid-left-sidebar.php">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
                     <div class="d-flex flex-column align-items-center gap-3">
                       <img
-                        src="images/gallery/categories/baby/breast-pumps.jpg"
+                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/breast-pumps.jpg"
                         class="cat-img rounded-circle"
                         alt="Branded breast pumps"
                         loading="lazy"
@@ -246,10 +249,10 @@
                   </a>
                 </div>
                 <div class="swiper-slide">
-                  <a href="shop-grid-left-sidebar.php">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
                     <div class="d-flex flex-column align-items-center gap-3">
                       <img
-                        src="images/gallery/categories/baby/prams.jpg"
+                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/prams.jpg"
                         class="cat-img rounded-circle"
                         alt="Prams and strollers"
                         loading="lazy"
@@ -263,10 +266,10 @@
                   </a>
                 </div>
                 <div class="swiper-slide">
-                  <a href="shop-grid-left-sidebar.php">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
                     <div class="d-flex flex-column align-items-center gap-3">
                       <img
-                        src="images/gallery/categories/baby/car-seats.jpg"
+                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/car-seats.jpg"
                         class="cat-img rounded-circle"
                         alt="Car seats"
                         loading="lazy"
@@ -280,10 +283,10 @@
                   </a>
                 </div>
                 <div class="swiper-slide">
-                  <a href="shop-grid-left-sidebar.php">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
                     <div class="d-flex flex-column align-items-center gap-3">
                       <img
-                        src="images/gallery/categories/baby/nursery-furniture.jpg"
+                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/nursery-furniture.jpg"
                         class="cat-img rounded-circle"
                         alt="Nursery furniture"
                         loading="lazy"
@@ -297,10 +300,10 @@
                   </a>
                 </div>
                 <div class="swiper-slide">
-                  <a href="shop-grid-left-sidebar.php">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
                     <div class="d-flex flex-column align-items-center gap-3">
                       <img
-                        src="images/gallery/categories/baby/bassinets.jpg"
+                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/bassinets.jpg"
                         class="cat-img rounded-circle"
                         alt="Bassinets"
                         loading="lazy"
@@ -340,10 +343,10 @@
             <div class="col">
               <div class="card h-100 border featured-listing-card">
                 <div class="card-body text-center p-3">
-                  <a href="product-detail.php?id=bugaboo-fox" class="text-decoration-none text-body">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=bugaboo-fox" class="text-decoration-none text-body">
                   <div class="featured-img-wrap featured-img-wrap--compact featured-img-wrap--stroller">
                     <img
-                      src="images/gallery/deals/featured-bugaboo-stroller.jpg"
+                      src="<?= htmlspecialchars($siteBase) ?>images/gallery/deals/featured-bugaboo-stroller.jpg"
                       class="featured-img"
                       alt="Bugaboo stroller"
                       loading="lazy"
@@ -352,17 +355,17 @@
                   </div>
                   <p class="featured-listing-price mb-0 mt-2">R 12,500</p>
                   </a>
-                  <a href="product-detail.php?id=bugaboo-fox" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=bugaboo-fox" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
                 </div>
               </div>
             </div>
             <div class="col">
               <div class="card h-100 border featured-listing-card">
                 <div class="card-body text-center p-3">
-                  <a href="shop-grid-left-sidebar.php" class="text-decoration-none text-body">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none text-body">
                   <div class="featured-img-wrap featured-img-wrap--compact featured-img-wrap--stroller">
                     <img
-                      src="images/gallery/deals/featured-nuna-stroller.jpg"
+                      src="<?= htmlspecialchars($siteBase) ?>images/gallery/deals/featured-nuna-stroller.jpg"
                       class="featured-img"
                       alt="Nuna Mixx stroller"
                       loading="lazy"
@@ -371,17 +374,17 @@
                   </div>
                   <p class="featured-listing-price mb-0 mt-2">R 8,900</p>
                   </a>
-                  <a href="shop-grid-left-sidebar.php" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
                 </div>
               </div>
             </div>
             <div class="col">
               <div class="card h-100 border featured-listing-card">
                 <div class="card-body text-center p-3">
-                  <a href="shop-grid-left-sidebar.php" class="text-decoration-none text-body">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none text-body">
                   <div class="featured-img-wrap featured-img-wrap--compact featured-img-wrap--product">
                     <img
-                      src="images/gallery/products/recommended/bassinet.png"
+                      src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/bassinet.png"
                       class="featured-img"
                       alt="Smart bassinet"
                       loading="lazy"
@@ -390,17 +393,17 @@
                   </div>
                   <p class="featured-listing-price mb-0 mt-2">R 18,500</p>
                   </a>
-                  <a href="shop-grid-left-sidebar.php" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
                 </div>
               </div>
             </div>
             <div class="col">
               <div class="card h-100 border featured-listing-card">
                 <div class="card-body text-center p-3">
-                  <a href="product-detail.php?id=car-seat" class="text-decoration-none text-body">
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=car-seat" class="text-decoration-none text-body">
                   <div class="featured-img-wrap featured-img-wrap--compact featured-img-wrap--product">
                     <img
-                      src="images/gallery/products/recommended/car-seat.jpg"
+                      src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/car-seat.jpg"
                       class="featured-img"
                       alt="Car seat"
                       loading="lazy"
@@ -409,7 +412,7 @@
                   </div>
                   <p class="featured-listing-price mb-0 mt-2">R 3,500</p>
                   </a>
-                  <a href="product-detail.php?id=car-seat" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
+                  <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=car-seat" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
                 </div>
               </div>
             </div>
@@ -427,72 +430,72 @@
           <div class="text-center">
             <div class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 g-4">
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/pampers.svg" class="img-fluid brand-logo-img" alt="Pampers" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/pampers.svg" class="img-fluid brand-logo-img" alt="Pampers" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/chelino-baby.png" class="img-fluid brand-logo-img" alt="Chelino Baby" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/chelino-baby.png" class="img-fluid brand-logo-img" alt="Chelino Baby" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/medela.svg" class="img-fluid brand-logo-img" alt="Medela" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/medela.svg" class="img-fluid brand-logo-img" alt="Medela" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/chicco.svg" class="img-fluid brand-logo-img" alt="Chicco" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/chicco.svg" class="img-fluid brand-logo-img" alt="Chicco" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/nuna.svg" class="img-fluid brand-logo-img" alt="Nuna" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/nuna.svg" class="img-fluid brand-logo-img" alt="Nuna" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/bugaboo.svg" class="img-fluid brand-logo-img" alt="Bugaboo" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/bugaboo.svg" class="img-fluid brand-logo-img" alt="Bugaboo" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/snoo.png" class="img-fluid brand-logo-img" alt="SNOO" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/snoo.png" class="img-fluid brand-logo-img" alt="SNOO" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/huggies.svg" class="img-fluid brand-logo-img" alt="Huggies" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/huggies.svg" class="img-fluid brand-logo-img" alt="Huggies" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/tommee-tippee.svg" class="img-fluid brand-logo-img" alt="Tommee Tippee" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/tommee-tippee.svg" class="img-fluid brand-logo-img" alt="Tommee Tippee" />
                   </div>
                 </a>
               </div>
               <div class="col">
-                <a href="shop-grid-left-sidebar.php" class="text-decoration-none">
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="text-decoration-none">
                   <div class="brand-logo p-4 border rounded-3 h-100 d-flex align-items-center justify-content-center">
-                    <img src="images/gallery/brands/johnsons-baby.svg" class="img-fluid brand-logo-img" alt="Johnson's Baby" />
+                    <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/brands/johnsons-baby.svg" class="img-fluid brand-logo-img" alt="Johnson's Baby" />
                   </div>
                 </a>
               </div>
@@ -516,7 +519,7 @@
           <div class="col-12 col-lg-auto ms-lg-auto">
             <a href="javascript:;"
               ><img
-                src="images/gallery/payment/stripe.png"
+                src="<?= htmlspecialchars($siteBase) ?>images/gallery/payment/stripe.png"
                 class="img-fluid"
                 width="40"
                 alt="Stripe"
@@ -570,7 +573,7 @@
                       <div class="col">
                         <div>
                           <img
-                            src="images/gallery/product-images/01.png"
+                            src="<?= htmlspecialchars($siteBase) ?>images/gallery/product-images/01.png"
                             class="img-fluid rounded-3"
                             alt=""
                           />
@@ -579,7 +582,7 @@
                       <div class="col">
                         <div>
                           <img
-                            src="images/gallery/product-images/02.png"
+                            src="<?= htmlspecialchars($siteBase) ?>images/gallery/product-images/02.png"
                             class="img-fluid rounded-3"
                             alt=""
                           />
@@ -588,7 +591,7 @@
                       <div class="col">
                         <div>
                           <img
-                            src="images/gallery/product-images/03.png"
+                            src="<?= htmlspecialchars($siteBase) ?>images/gallery/product-images/03.png"
                             class="img-fluid rounded-3"
                             alt=""
                           />
@@ -597,7 +600,7 @@
                       <div class="col">
                         <div>
                           <img
-                            src="images/gallery/product-images/04.png"
+                            src="<?= htmlspecialchars($siteBase) ?>images/gallery/product-images/04.png"
                             class="img-fluid rounded-3"
                             alt=""
                           />
@@ -614,7 +617,7 @@
                   <h2 class="mb-0">Compact Baby Pram</h2>
                   <?php $qv = $products['chicco-pram']; ?>
                   <div class="d-flex align-items-center gap-2 my-3">
-                    <a href="seller-profile.php" class="listing-seller d-inline-flex align-items-center gap-2 text-decoration-none">
+                    <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-inline-flex align-items-center gap-2 text-decoration-none">
                       <img src="<?= htmlspecialchars($qv['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($qv['seller']) ?>" width="36" height="36" loading="lazy">
                       <span>
                         <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($qv['seller']) ?></span>
@@ -692,14 +695,14 @@
   
 
     
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="<?= htmlspecialchars($siteBase) ?>js/jquery.min.js"></script>
+    <script src="<?= htmlspecialchars($siteBase) ?>js/bootstrap.bundle.min.js"></script>
     
     <script src="plugins/swiper/js/swiper-bundle.min.js"></script>
-    <script src="js/search-slider.js"></script>
-  <script src="js/search-modal.js"></script>
+    <script src="<?= htmlspecialchars($siteBase) ?>js/search-slider.js"></script>
+  <script src="<?= htmlspecialchars($siteBase) ?>js/search-modal.js"></script>
     
-    <script src="js/index.js"></script>
-    <script src="js/main.js"></script>
+    <script src="<?= htmlspecialchars($siteBase) ?>js/index.js"></script>
+    <script src="<?= htmlspecialchars($siteBase) ?>js/main.js"></script>
   </body>
 </html>

@@ -1,7 +1,12 @@
 <?php
 
 define('APP_ROOT', __DIR__);
-
-// Absolute web path to app root (trailing slash). Resolves nav/assets from any entry stub.
-$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
-$siteBase = ($scriptDir === '/' || $scriptDir === '') ? '/' : $scriptDir . '/';
+$docRoot = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? APP_ROOT) ?: APP_ROOT);
+$appRoot = str_replace('\\', '/', realpath(APP_ROOT) ?: APP_ROOT);
+$siteBase = '/';
+if (str_starts_with($appRoot, $docRoot)) {
+    $relative = substr($appRoot, strlen($docRoot));
+    if ($relative !== '' && $relative !== '/') {
+        $siteBase = rtrim($relative, '/') . '/';
+    }
+}

@@ -130,7 +130,7 @@ function getCurrentUser()
     ];
 }
 
-function requireLogin($redirect = 'auth-login.php')
+function requireLogin($redirect = 'pages/auth/login.php')
 {
     if (!isLoggedIn()) {
         header('Location: ' . $redirect);

@@ -22,11 +22,11 @@ $siteBase = $siteBase ?? '';
       <h5 class="mb-0"><?php echo formatPrice($cartSubtotal); ?></h5>
     </div>
     <div class="d-flex align-items-center gap-3">
-      <a href="<?= htmlspecialchars($siteBase) ?>shopping-cart.php" class="btn btn-light border px-4 py-2 flex-fill">View Cart</a>
+      <a href="<?= htmlspecialchars($siteBase) ?>pages/cart.php" class="btn btn-light border px-4 py-2 flex-fill">View Cart</a>
       <?php if (getCartCount() > 0): ?>
-      <a href="<?= htmlspecialchars($siteBase) ?>checkout.php" class="btn btn-dark px-4 py-2 border border-dark flex-fill">Checkout</a>
+      <a href="<?= htmlspecialchars($siteBase) ?>pages/checkout.php" class="btn btn-dark px-4 py-2 border border-dark flex-fill">Checkout</a>
       <?php else: ?>
-      <a href="<?= htmlspecialchars($siteBase) ?>shop-grid-left-sidebar.php" class="btn btn-dark px-4 py-2 border border-dark flex-fill">Browse listings</a>
+      <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn btn-dark px-4 py-2 border border-dark flex-fill">Browse listings</a>
       <?php endif; ?>
     </div>
   </div>

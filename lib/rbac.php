@@ -111,3 +111,15 @@ function adminStatusBadge($status)
 {
     return '<span class="badge admin-status-badge">' . htmlspecialchars(ucfirst($status)) . '</span>';
 }
+
+function adminProductImageUrl($path)
+{
+    if ($path === null || $path === '') {
+        return '';
+    }
+
+    $path = ltrim((string) $path, '/');
+    $path = preg_replace('#^assets/#', '', $path);
+
+    return '../' . $path;
+}

@@ -5,7 +5,7 @@ $cartItems = getCartItems();
 <?php if (empty($cartItems)) : ?>
   <div class="text-center py-5">
     <p class="mb-3 text-body-secondary">Your cart is empty.</p>
-    <a href="shop-grid-left-sidebar.php" class="btn btn-dark rounded-3">Browse listings</a>
+    <a href="pages/shop.php" class="btn btn-dark rounded-3">Browse listings</a>
   </div>
 <?php else : ?>
   <?php foreach ($cartItems as $index => $item) : ?>
@@ -32,7 +32,7 @@ $cartItems = getCartItems();
       <form action="cart-actions.php" method="post">
         <input type="hidden" name="action" value="remove">
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($item['id']); ?>">
-        <input type="hidden" name="redirect" value="shopping-cart.php">
+        <input type="hidden" name="redirect" value="pages/cart.php">
         <button type="submit" class="btn border border-2 cart-product-btn-delete" aria-label="Remove item">
           <i class="bi bi-x-lg"></i>
         </button>

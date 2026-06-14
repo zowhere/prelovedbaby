@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 require_once __DIR__ . '/products.php';
-require_once __DIR__ . '/../helpers/courier-copy.php';
+require_once __DIR__ . '/courier-copy.php';
 
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
