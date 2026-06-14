@@ -39,7 +39,7 @@ $accountMenuActive = 'profile';
  <link rel="stylesheet" href="<?= htmlspecialchars($siteBase) ?>css/bootstrap-icons.min.css">
  
  <link href="<?= htmlspecialchars($siteBase) ?>css/sass/style.css" rel="stylesheet">
- 
+ <?php include APP_ROOT . '/views/analytics-head.php'; ?>
 </head>
 
 <body>
@@ -93,7 +93,7 @@ $accountMenuActive = 'profile';
           <div class="col-12 col-lg-9">
             <div class="my-profile">
                <?php if ($registeredSeller): ?>
-               <div class="alert alert-success mb-4">Your seller account is ready. You can start listing baby gear from your profile.</div>
+               <div class="alert alert-success mb-4">Your seller account is ready. <a href="<?= htmlspecialchars($siteBase) ?>pages/account/listings.php">Go to My Listings</a> to add your first item.</div>
                <?php endif; ?>
                <?php if ($error): ?>
                <div class="alert alert-danger mb-4"><?= htmlspecialchars($error) ?></div>

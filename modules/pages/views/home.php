@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="css/bootstrap-icons.min.css" />
     
     <link href="css/sass/style.css" rel="stylesheet" />
+    <?php include APP_ROOT . '/views/analytics-head.php'; ?>
   </head>
 
   <body>

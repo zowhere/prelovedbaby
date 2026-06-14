@@ -30,8 +30,10 @@ function syncProductCategories($productId, $categoryIds)
 
 function productFormData()
 {
+    $sellerId = trim($_POST['seller_id'] ?? '');
     return [
         'listing_id' => trim($_POST['listing_id'] ?? ''),
+        'seller_id' => $sellerId !== '' ? (int) $sellerId : null,
         'seller_name' => trim($_POST['seller_name'] ?? ''),
         'brand' => trim($_POST['brand'] ?? ''),
         'name' => trim($_POST['name'] ?? ''),
@@ -58,10 +60,11 @@ try {
         }
 
         getPdo()->prepare(
-            'INSERT INTO products (listing_id, seller_name, brand, name, slug, price, item_condition, location, description, image, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO products (listing_id, seller_id, seller_name, brand, name, slug, price, item_condition, location, description, image, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         )->execute([
             $data['listing_id'],
+            $data['seller_id'],
             $data['seller_name'],
             $data['brand'],
             $data['name'],
@@ -92,10 +95,11 @@ try {
         }
 
         getPdo()->prepare(
-            'UPDATE products SET listing_id = ?, seller_name = ?, brand = ?, name = ?, slug = ?, price = ?,
+            'UPDATE products SET listing_id = ?, seller_id = ?, seller_name = ?, brand = ?, name = ?, slug = ?, price = ?,
              item_condition = ?, location = ?, description = ?, image = ?, status = ? WHERE id = ?'
         )->execute([
             $data['listing_id'],
+            $data['seller_id'],
             $data['seller_name'],
             $data['brand'],
             $data['name'],
@@ -126,6 +130,34 @@ try {
 
         getPdo()->prepare('DELETE FROM products WHERE id = ?')->execute([$productId]);
         header('Location: ' . $redirect . '?success=' . urlencode('Product deleted.'));
+        exit;
+    }
+
+    if ($action === 'approve') {
+        requirePermission('products.edit');
+
+        $productId = (int) ($_POST['id'] ?? 0);
+        if ($productId <= 0) {
+            header('Location: products.php?error=' . urlencode('Invalid product.'));
+            exit;
+        }
+
+        getPdo()->prepare('UPDATE products SET status = ? WHERE id = ?')->execute(['live', $productId]);
+        header('Location: ' . $redirect . '?success=' . urlencode('Listing approved and is now live.'));
+        exit;
+    }
+
+    if ($action === 'block') {
+        requirePermission('products.edit');
+
+        $productId = (int) ($_POST['id'] ?? 0);
+        if ($productId <= 0) {
+            header('Location: products.php?error=' . urlencode('Invalid product.'));
+            exit;
+        }
+
+        getPdo()->prepare('UPDATE products SET status = ? WHERE id = ?')->execute(['draft', $productId]);
+        header('Location: ' . $redirect . '?success=' . urlencode('Listing hidden from the shop.'));
         exit;
     }
 } catch (Throwable $e) {

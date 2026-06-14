@@ -1,8 +1,9 @@
+-- Drop child tables before parents (FK-safe order)
 DROP TABLE IF EXISTS order_items;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS product_categories;
+DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS role_permissions;
 DROP TABLE IF EXISTS permissions;
@@ -65,6 +66,7 @@ CREATE TABLE categories (
 CREATE TABLE products (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   listing_id VARCHAR(20) NOT NULL UNIQUE,
+  seller_id INT DEFAULT NULL,
   seller_name VARCHAR(120) NOT NULL,
   brand VARCHAR(80) NOT NULL,
   name VARCHAR(200) NOT NULL,
@@ -75,7 +77,8 @@ CREATE TABLE products (
   description TEXT,
   image VARCHAR(255) DEFAULT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'live',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (seller_id) REFERENCES users (id) ON DELETE SET NULL
 );
 
 CREATE TABLE product_categories (
@@ -116,6 +119,9 @@ INSERT INTO permissions (name, slug, module) VALUES
   ('Create products', 'products.create', 'products'),
   ('Edit products', 'products.edit', 'products'),
   ('Delete products', 'products.delete', 'products'),
+  ('Create own listings', 'listings.create', 'listings'),
+  ('View own listings', 'listings.view_own', 'listings'),
+  ('Edit own listings', 'listings.edit_own', 'listings'),
   ('View orders', 'orders.view', 'orders'),
   ('Manage roles', 'roles.manage', 'roles')
 ON DUPLICATE KEY UPDATE name = VALUES(name), module = VALUES(module);
@@ -128,4 +134,5 @@ JOIN permissions p ON (
   OR (r.slug = 'admin' AND p.slug != 'roles.manage')
   OR (r.slug = 'manager' AND p.slug IN ('dashboard.view', 'users.view', 'products.view', 'products.create', 'products.edit', 'orders.view'))
   OR (r.slug = 'support' AND p.slug IN ('dashboard.view', 'products.view', 'orders.view'))
+  OR (r.slug = 'seller' AND p.slug IN ('listings.create', 'listings.view_own', 'listings.edit_own'))
 );

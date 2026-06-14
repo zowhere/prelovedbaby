@@ -4,6 +4,10 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 <!doctype html>
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
+<?php
+$shopProducts = array_values($products);
+$shopProductCount = count($shopProducts);
+?>
 
 <head>
   <meta charset="utf-8">
@@ -31,7 +35,7 @@ require_once dirname(__DIR__) . '/bootstrap.php';
   <link rel="stylesheet" href="<?= htmlspecialchars($siteBase) ?>css/bootstrap-icons.min.css">
   
   <link href="<?= htmlspecialchars($siteBase) ?>css/sass/style.css" rel="stylesheet">
-  
+  <?php include APP_ROOT . '/views/analytics-head.php'; ?>
 </head>
 
 <body>
@@ -279,7 +283,7 @@ require_once dirname(__DIR__) . '/bootstrap.php';
             <div class="shop-products">
               <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 gap-sm-0 mb-4">
                 <div>
-                  <p class="mb-0">Found <span class="fw-semibold shop-results-count">5</span> listings</p>
+                  <p class="mb-0">Found <span class="fw-semibold shop-results-count"><?= $shopProductCount ?></span> listings</p>
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <p class="mb-0 fw-semibold">Sort by:</p>
@@ -298,48 +302,20 @@ require_once dirname(__DIR__) . '/bootstrap.php';
                   </div>
                 </div>
               </div>
-              <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-4"><div class="col">
-                  <div class="product-card product-card--listing border rounded-3 p-3">
-                    <div class="d-flex flex-column gap-3">
-                      <div class="position-relative product-img-wrap">
-                        <span class="listing-condition-badge position-absolute top-0 start-0 m-3">Like New</span>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=chicco-pram">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/chicco-pram.png" class="product-img img-fluid rounded-3" alt="Compact Baby Pram" loading="lazy" decoding="async">
-                        </a>
-                        <div class="position-absolute top-0 end-0 m-3 product-actions">
-                          <div class="d-flex flex-column gap-2">
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-heart"></i></a>
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-funnel"></i></a>
-                            <a href="javascript:;" class="btn btn-action" data-bs-toggle="modal" data-bs-target="#QuickViewModal"><i class="bi bi-eye"></i></a>
-                          </div>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                          <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=chicco-pram" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                        </div>
-                      </div>
-                      <div>
-                        <p class="listing-brand mb-1">Chicco</p>
-                        <h3 class="product-name mb-1">Compact Baby Pram</h3>
-                        <p class="mb-1 product-price">R 4,500</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/sarah-m.jpg" class="seller-avatar" alt="Sarah M." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Sarah M.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.9 · 4 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Sandton, Johannesburg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-4">
+                <?php foreach ($shopProducts as $product): ?>
+                <?php
+                $productUrl = $siteBase . 'pages/product-detail.php?id=' . urlencode($product['id']);
+                $imageUrl = $siteBase . ltrim($product['image'], '/');
+                $sellerAvatar = $siteBase . ltrim($product['seller_avatar'] ?? 'images/gallery/sellers/default.jpg', '/');
+                ?>
                 <div class="col">
                   <div class="product-card product-card--listing border rounded-3 p-3">
                     <div class="d-flex flex-column gap-3">
                       <div class="position-relative product-img-wrap">
-                        <span class="listing-condition-badge position-absolute top-0 start-0 m-3">Like New</span>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=breast-pump">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/breast-pump.png" class="product-img img-fluid rounded-3" alt="Electric Breast Pump" loading="lazy" decoding="async">
+                        <span class="listing-condition-badge position-absolute top-0 start-0 m-3"><?= htmlspecialchars($product['condition']) ?></span>
+                        <a href="<?= htmlspecialchars($productUrl) ?>">
+                          <img src="<?= htmlspecialchars($imageUrl) ?>" class="product-img img-fluid rounded-3" alt="<?= htmlspecialchars($product['name']) ?>" loading="lazy" decoding="async">
                         </a>
                         <div class="position-absolute top-0 end-0 m-3 product-actions">
                           <div class="d-flex flex-column gap-2">
@@ -349,131 +325,34 @@ require_once dirname(__DIR__) . '/bootstrap.php';
                           </div>
                         </div>
                         <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                          <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=breast-pump" class="btn btn-dark rounded-5 w-100">View Listing</a>
+                          <a href="<?= htmlspecialchars($productUrl) ?>" class="btn btn-dark rounded-5 w-100">View Listing</a>
                         </div>
                       </div>
                       <div>
-                        <p class="listing-brand mb-1">Medela</p>
-                        <h3 class="product-name mb-1">Electric Breast Pump</h3>
-                        <p class="mb-1 product-price">R 2,800</p>
+                        <p class="listing-brand mb-1"><?= htmlspecialchars($product['brand']) ?></p>
+                        <h3 class="product-name mb-1"><?= htmlspecialchars($product['name']) ?></h3>
+                        <p class="mb-1 product-price"><?= formatPrice($product['price']) ?></p>
                         <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/lerato-n.jpg" class="seller-avatar" alt="Lerato N." width="36" height="36" loading="lazy">
+                          <img src="<?= htmlspecialchars($sellerAvatar) ?>" class="seller-avatar" alt="<?= htmlspecialchars($product['seller']) ?>" width="36" height="36" loading="lazy">
                           <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Lerato N.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.8 · 8 reviews</span>
+                            <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($product['seller']) ?></span>
+                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> <?= number_format($product['seller_rating'], 1) ?> · <?= (int) $product['seller_reviews'] ?> reviews</span>
                           </span>
                         </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Sea Point, Cape Town</p>
+                        <?php if (!empty($product['location'])): ?>
+                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> <?= htmlspecialchars($product['location']) ?></p>
+                        <?php endif; ?>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="product-card product-card--listing border rounded-3 p-3">
-                    <div class="d-flex flex-column gap-3">
-                      <div class="position-relative product-img-wrap">
-                        <span class="listing-condition-badge position-absolute top-0 start-0 m-3">Good</span>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=baby-cot">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/baby-cot.png" class="product-img img-fluid rounded-3" alt="Wooden Baby Cot" loading="lazy" decoding="async">
-                        </a>
-                        <div class="position-absolute top-0 end-0 m-3 product-actions">
-                          <div class="d-flex flex-column gap-2">
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-heart"></i></a>
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-funnel"></i></a>
-                            <a href="javascript:;" class="btn btn-action" data-bs-toggle="modal" data-bs-target="#QuickViewModal"><i class="bi bi-eye"></i></a>
-                          </div>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                          <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=baby-cot" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                        </div>
-                      </div>
-                      <div>
-                        <p class="listing-brand mb-1">Stokke</p>
-                        <h3 class="product-name mb-1">Wooden Baby Cot</h3>
-                        <p class="mb-1 product-price">R 3,200</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/priya-s.jpg" class="seller-avatar" alt="Priya K." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Priya K.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 5.0 · 6 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Umhlanga, Durban</p>
-                      </div>
-                    </div>
-                  </div>
+                <?php endforeach; ?>
+                <?php if ($shopProductCount === 0): ?>
+                <div class="col-12">
+                  <p class="text-body-secondary mb-0">No listings available right now. Check back soon.</p>
                 </div>
-                <div class="col">
-                  <div class="product-card product-card--listing border rounded-3 p-3">
-                    <div class="d-flex flex-column gap-3">
-                      <div class="position-relative product-img-wrap">
-                        <span class="listing-condition-badge position-absolute top-0 start-0 m-3">Like New</span>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=car-seat">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/car-seat.jpg" class="product-img img-fluid rounded-3" alt="Group 0+ Car Seat" loading="lazy" decoding="async">
-                        </a>
-                        <div class="position-absolute top-0 end-0 m-3 product-actions">
-                          <div class="d-flex flex-column gap-2">
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-heart"></i></a>
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-funnel"></i></a>
-                            <a href="javascript:;" class="btn btn-action" data-bs-toggle="modal" data-bs-target="#QuickViewModal"><i class="bi bi-eye"></i></a>
-                          </div>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                          <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=car-seat" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                        </div>
-                      </div>
-                      <div>
-                        <p class="listing-brand mb-1">Nuna</p>
-                        <h3 class="product-name mb-1">Group 0+ Car Seat</h3>
-                        <p class="mb-1 product-price">R 3,500</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/thabo-m.jpg" class="seller-avatar" alt="Thabo M." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Thabo M.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.7 · 9 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Centurion, Pretoria</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="product-card product-card--listing border rounded-3 p-3">
-                    <div class="d-flex flex-column gap-3">
-                      <div class="position-relative product-img-wrap">
-                        <span class="listing-condition-badge position-absolute top-0 start-0 m-3">Good</span>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=high-chair">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/high-chair.png" class="product-img img-fluid rounded-3" alt="Convertible High Chair" loading="lazy" decoding="async">
-                        </a>
-                        <div class="position-absolute top-0 end-0 m-3 product-actions">
-                          <div class="d-flex flex-column gap-2">
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-heart"></i></a>
-                            <a href="javascript:;" class="btn btn-action"><i class="bi bi-funnel"></i></a>
-                            <a href="javascript:;" class="btn btn-action" data-bs-toggle="modal" data-bs-target="#QuickViewModal"><i class="bi bi-eye"></i></a>
-                          </div>
-                        </div>
-                        <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                          <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=high-chair" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                        </div>
-                      </div>
-                      <div>
-                        <p class="listing-brand mb-1">Chicco</p>
-                        <h3 class="product-name mb-1">Convertible High Chair</h3>
-                        <p class="mb-1 product-price">R 1,800</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/chris-w.jpg" class="seller-avatar" alt="Chris W." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Chris W.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.9 · 5 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Rosebank, Johannesburg</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                </div>
+                <?php endif; ?>
+              </div>
 
               
               <div class="page-pagination">

@@ -6,11 +6,13 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
 <?php
 $productId = $_GET['id'] ?? 'chicco-pram';
-if (!isset($products[$productId])) {
-    $productId = 'chicco-pram';
+$product = getProductBySlug($productId);
+if ($product === null) {
+    header('Location: ' . $siteBase . 'pages/shop.php');
+    exit;
 }
-$product = $products[$productId];
 $inCart = in_array($productId, $_SESSION['cart'], true);
+$primaryCategory = $product['categories'][0] ?? 'Browse Listings';
 ?>
 
 <head>
@@ -33,7 +35,7 @@ $inCart = in_array($productId, $_SESSION['cart'], true);
   <link rel="stylesheet" href="<?= htmlspecialchars($siteBase) ?>css/bootstrap-icons.min.css">
   
   <link href="<?= htmlspecialchars($siteBase) ?>css/sass/style.css" rel="stylesheet">
-  
+  <?php include APP_ROOT . '/views/analytics-head.php'; ?>
 </head>
 
 <body>
@@ -56,9 +58,9 @@ $inCart = in_array($productId, $_SESSION['cart'], true);
           <ol class="breadcrumb mb-0 gap-2">
             <li class="breadcrumb-item"><a href="<?= htmlspecialchars($siteBase) ?>index.php" class="breadcrumb-link">Home</a></li>
             <li><i class="bi bi-chevron-right"></i></li>
-            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="breadcrumb-link">Prams &amp; Strollers</a></li>
+            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="breadcrumb-link"><?= htmlspecialchars($primaryCategory) ?></a></li>
             <li><i class="bi bi-chevron-right"></i></li>
-            <li class="breadcrumb-item breadcrumb-active">Compact Baby Pram</li>
+            <li class="breadcrumb-item breadcrumb-active"><?= htmlspecialchars($product['name']) ?></li>
           </ol>
         </nav>
       </div>

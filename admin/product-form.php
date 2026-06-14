@@ -15,6 +15,7 @@ if ($isEdit) {
 
 $product = [
     'listing_id' => '',
+    'seller_id' => '',
     'seller_name' => '',
     'brand' => '',
     'name' => '',
@@ -103,6 +104,10 @@ include __DIR__ . '/includes/layout-start.php';
             <div class="col-md-6">
               <label for="seller_name" class="form-label">Seller name</label>
               <input type="text" class="form-control border-2" id="seller_name" name="seller_name" value="<?= htmlspecialchars($product['seller_name']) ?>" required>
+              <?php if (!empty($product['seller_id'])) : ?>
+              <input type="hidden" name="seller_id" value="<?= (int) $product['seller_id'] ?>">
+              <div class="form-text">Linked seller account ID: <?= (int) $product['seller_id'] ?></div>
+              <?php endif; ?>
             </div>
             <div class="col-md-6">
               <label for="location" class="form-label">Location</label>

@@ -39,7 +39,7 @@ $thankYouRecommendations = array_slice(array_values($products), 0, 3);
   <link rel="stylesheet" href="<?= htmlspecialchars($siteBase) ?>css/bootstrap-icons.min.css">
   
   <link href="<?= htmlspecialchars($siteBase) ?>css/sass/style.css" rel="stylesheet">
-  
+  <?php include APP_ROOT . '/views/analytics-head.php'; ?>
 </head>
 
 <body>

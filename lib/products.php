@@ -1,5 +1,6 @@
 <?php
-$products = [
+
+$staticProducts = [
     'chicco-pram' => [
         'id' => 'chicco-pram',
         'brand' => 'Chicco',
@@ -151,3 +152,100 @@ $products = [
         ],
     ],
 ];
+
+function mapDbProductToStorefront(array $row)
+{
+    $categories = !empty($row['category_names'])
+        ? array_map('trim', explode(',', $row['category_names']))
+        : [];
+
+    $description = $row['description'] ?? '';
+    $shortDesc = mb_strlen($description) > 200 ? mb_substr($description, 0, 197) . '...' : $description;
+
+    return [
+        'id' => $row['slug'],
+        'db_id' => (int) $row['id'],
+        'brand' => $row['brand'],
+        'name' => $row['name'],
+        'price' => (float) $row['price'],
+        'image' => $row['image'] ?? '',
+        'condition' => $row['item_condition'],
+        'seller' => $row['seller_name'],
+        'seller_rating' => 4.8,
+        'seller_reviews' => 0,
+        'seller_avatar' => 'images/gallery/sellers/default.jpg',
+        'location' => $row['location'] ?? '',
+        'age' => 'N/A',
+        'categories' => $categories,
+        'listing_id' => $row['listing_id'],
+        'url' => 'pages/product-detail.php?id=' . urlencode($row['slug']),
+        'short_desc' => $shortDesc,
+        'description' => $description,
+        'details' => [
+            'Condition: ' . $row['item_condition'],
+        ],
+    ];
+}
+
+function loadLiveProductsFromDb()
+{
+    try {
+        require_once __DIR__ . '/db.php';
+        $stmt = getPdo()->query(
+            'SELECT p.*, GROUP_CONCAT(c.name ORDER BY c.name SEPARATOR ", ") AS category_names
+             FROM products p
+             LEFT JOIN product_categories pc ON pc.product_id = p.id
+             LEFT JOIN categories c ON c.id = pc.category_id
+             WHERE p.status = \'live\'
+             GROUP BY p.id
+             ORDER BY p.created_at DESC'
+        );
+
+        $products = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $products[$row['slug']] = mapDbProductToStorefront($row);
+        }
+
+        return $products;
+    } catch (Throwable $e) {
+        return [];
+    }
+}
+
+function loadAllProductSlugsFromDb()
+{
+    try {
+        require_once __DIR__ . '/db.php';
+        $rows = getPdo()->query('SELECT slug FROM products')->fetchAll();
+
+        return array_fill_keys(array_column($rows, 'slug'), true);
+    } catch (Throwable $e) {
+        return [];
+    }
+}
+
+function getStorefrontProducts()
+{
+    global $staticProducts;
+
+    $dbProducts = loadLiveProductsFromDb();
+    $dbSlugs = loadAllProductSlugsFromDb();
+    $filteredStatic = array_filter(
+        $staticProducts,
+        static function ($product, $slug) use ($dbSlugs) {
+            return !isset($dbSlugs[$slug]);
+        },
+        ARRAY_FILTER_USE_BOTH
+    );
+
+    return array_merge($filteredStatic, $dbProducts);
+}
+
+function getProductBySlug($slug)
+{
+    $products = getStorefrontProducts();
+
+    return $products[$slug] ?? null;
+}
+
+$products = getStorefrontProducts();

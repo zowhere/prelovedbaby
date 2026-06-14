@@ -24,6 +24,12 @@ $seedUsers = [
         'password' => 'Manager123',
         'role_id' => 3,
     ],
+    [
+        'name' => 'Demo Seller',
+        'email' => 'seller@prelovedbaby.co.za',
+        'password' => 'Seller123!',
+        'role_id' => 6,
+    ],
 ];
 
 try {
@@ -113,7 +119,9 @@ try {
                 <strong>Admin login</strong> (Super Admin):<br>
                 <code>admin@prelovedbaby.co.za</code> / <code>Admin123!</code><br><br>
                 <strong>Manager login</strong> (products only):<br>
-                <code>manager@prelovedbaby.co.za</code> / <code>Manager123</code>
+                <code>manager@prelovedbaby.co.za</code> / <code>Manager123</code><br><br>
+                <strong>Seller login</strong> (list items):<br>
+                <code>seller@prelovedbaby.co.za</code> / <code>Seller123!</code>
               </div>
               <a href="admin/login.php" class="btn btn-dark mt-3 me-2">Go to admin</a>
               <a href="pages/auth/login.php" class="btn btn-outline-dark mt-3">Storefront login</a>

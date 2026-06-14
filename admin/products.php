@@ -7,8 +7,9 @@ require_once APP_ROOT . '/lib/db.php';
 requirePermission('products.view');
 
 $search = trim($_GET['q'] ?? '');
-$sql = 'SELECT p.*, GROUP_CONCAT(c.name ORDER BY c.name SEPARATOR ", ") AS categories
+$sql = 'SELECT p.*, u.email AS seller_email, GROUP_CONCAT(c.name ORDER BY c.name SEPARATOR ", ") AS categories
         FROM products p
+        LEFT JOIN users u ON u.id = p.seller_id
         LEFT JOIN product_categories pc ON pc.product_id = p.id
         LEFT JOIN categories c ON c.id = pc.category_id';
 $params = [];
@@ -74,11 +75,30 @@ include __DIR__ . '/includes/layout-start.php';
               <div class="text-body-secondary font-14"><?= htmlspecialchars($product['brand']) ?></div>
             </td>
             <td><?= formatAdminPrice($product['price']) ?></td>
-            <td><?= htmlspecialchars($product['seller_name']) ?></td>
+            <td>
+              <div class="fw-semibold"><?= htmlspecialchars($product['seller_name']) ?></div>
+              <?php if (!empty($product['seller_email'])) : ?>
+              <div class="text-body-secondary font-14"><?= htmlspecialchars($product['seller_email']) ?></div>
+              <?php endif; ?>
+            </td>
             <td><?= adminStatusBadge($product['status']) ?></td>
             <td class="text-end">
               <?php if (can('products.edit')) : ?>
               <a href="product-form.php?id=<?= (int) $product['id'] ?>" class="btn btn-sm btn-outline-dark">Edit</a>
+              <?php if ($product['status'] === 'review') : ?>
+              <form action="product-actions.php" method="post" class="d-inline">
+                <input type="hidden" name="action" value="approve">
+                <input type="hidden" name="id" value="<?= (int) $product['id'] ?>">
+                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+              </form>
+              <?php endif; ?>
+              <?php if ($product['status'] === 'live') : ?>
+              <form action="product-actions.php" method="post" class="d-inline" onsubmit="return confirm('Hide this listing from the shop?');">
+                <input type="hidden" name="action" value="block">
+                <input type="hidden" name="id" value="<?= (int) $product['id'] ?>">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Hide</button>
+              </form>
+              <?php endif; ?>
               <?php endif; ?>
               <?php if (can('products.delete')) : ?>
               <form action="product-actions.php" method="post" class="d-inline" onsubmit="return confirm('Delete this listing?');">

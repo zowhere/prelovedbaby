@@ -23,7 +23,7 @@ require_once dirname(__DIR__, 2) . '/bootstrap.php';
   <link rel="stylesheet" href="<?= htmlspecialchars($siteBase) ?>css/bootstrap-icons.min.css">
   
   <link href="<?= htmlspecialchars($siteBase) ?>css/sass/style.css" rel="stylesheet">
-  
+  <?php include APP_ROOT . '/views/analytics-head.php'; ?>
 </head>
 
 <body>
