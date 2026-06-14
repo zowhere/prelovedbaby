@@ -1,5 +1,4 @@
 <?php
-// Edit these to match your local MySQL setup.
 return [
     'db_host' => '127.0.0.1',
     'db_name' => 'prelovedbaby',
@@ -7,10 +6,10 @@ return [
     'db_pass' => '',
     'db_charset' => 'utf8mb4',
 
-    // fake = simulated Stripe (always succeeds in dev/demo); live = real Stripe (not wired yet)
+    // fake = simulated Stripe (always succeeds in dev/demo)
     'payment_mode' => 'fake',
 
-    // SMTP receipt emails (override with env vars SMTP_HOST, SMTP_PORT, etc.)
+    // SMTP receipt emails
     'smtp_host' => '',
     'smtp_port' => 587,
     'smtp_user' => '',
@@ -18,4 +17,7 @@ return [
     'smtp_from_email' => 'noreply@prelovedbaby.co.za',
     'smtp_from_name' => 'PreLoved Baby',
     'smtp_encryption' => 'tls',
+
+    // Firebase / Google Analytics measurement ID (e.g. G-XXXXXXXXXX). Production ID goes here only.
+    'firebase_measurement_id' => 'G-L17QK6TR7C',
 ];
