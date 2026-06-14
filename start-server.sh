@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start PreLoved Baby locally. Use this instead of Live Server. PHP pages need a PHP server.
+# Starts PreLoved Baby locally
 set -e
 cd "$(dirname "$0")"
 PORT="${PORT:-8081}"
