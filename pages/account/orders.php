@@ -5,56 +5,32 @@ require_once dirname(__DIR__, 2) . '/bootstrap.php';
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
 <?php
-$sampleOrders = [
-    [
-        'id' => 'PLB-2025-1042',
-        'date' => '14 Mar 2025',
-        'status' => 'With courier',
-        'status_class' => 'text-primary',
-        'total' => 4580,
-        'product_id' => 'chicco-pram',
-    ],
-    [
-        'id' => 'PLB-2025-1087',
-        'date' => '18 Mar 2025',
-        'status' => 'Delivered',
-        'status_class' => 'text-success',
-        'total' => 2880,
-        'product_id' => 'breast-pump',
-    ],
-    [
-        'id' => 'PLB-2025-1123',
-        'date' => '22 Mar 2025',
-        'status' => 'Cancelled',
-        'status_class' => 'text-danger',
-        'total' => 3280,
-        'product_id' => 'baby-cot',
-    ],
-    [
-        'id' => 'PLB-2025-1156',
-        'date' => '26 Mar 2025',
-        'status' => 'Delivered',
-        'status_class' => 'text-success',
-        'total' => 3580,
-        'product_id' => 'car-seat',
-    ],
-    [
-        'id' => 'PLB-2025-1189',
-        'date' => '28 Mar 2025',
-        'status' => 'Cancelled',
-        'status_class' => 'text-danger',
-        'total' => 1880,
-        'product_id' => 'high-chair',
-    ],
-    [
-        'id' => 'PLB-2025-1214',
-        'date' => '30 Mar 2025',
-        'status' => 'Awaiting collection',
-        'status_class' => 'text-primary',
-        'total' => 12580,
-        'product_id' => 'bugaboo-fox',
-    ],
-];
+require_once APP_ROOT . '/lib/auth.php';
+requireLogin();
+$accountMenuActive = 'orders';
+
+function getCustomerOrderStatus($status)
+{
+    return match ($status) {
+        'completed' => ['label' => 'Delivered', 'class' => 'text-success'],
+        'paid' => ['label' => 'Awaiting collection', 'class' => 'text-primary'],
+        'pending', 'shipped' => ['label' => 'With courier', 'class' => 'text-primary'],
+        'cancelled' => ['label' => 'Cancelled', 'class' => 'text-danger'],
+        default => ['label' => ucfirst(str_replace('-', ' ', $status)), 'class' => 'text-body-secondary'],
+    };
+}
+
+$ordersStmt = getPdo()->prepare(
+    'SELECT o.id, o.total_amount, o.status, o.created_at,
+            p.brand, p.name, p.image, p.item_condition, p.seller_name
+     FROM orders o
+     INNER JOIN order_items oi ON oi.order_id = o.id
+     INNER JOIN products p ON p.id = oi.product_id
+     WHERE o.user_id = ?
+     ORDER BY o.created_at DESC, oi.id ASC'
+);
+$ordersStmt->execute([getCurrentUser()['id']]);
+$userOrders = $ordersStmt->fetchAll();
 ?>
 
 <head>
@@ -123,16 +99,7 @@ $sampleOrders = [
                   <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <div class="my-account-menu w-100 border rounded-3 p-3">
-                    <div class="list-group list-group-flush">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/orders.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3 active"><span><i class="bi bi-bag-check"></i></span>My Orders</a>
-<a href="<?= htmlspecialchars($siteBase) ?>pages/account/payment-methods.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-wallet"></i></span>Payment Methods</a>
-                      <a href="javascript:;" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-star"></i></span>My Reviews</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-person-square"></i></span>My Profile</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/addresses.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-geo-alt"></i></span>Addresses</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-box-arrow-left"></i></span>Logout</a>
-                    </div>
-                  </div>
+                  <?php include APP_ROOT . '/views/account-menu.php'; ?>
                 </div>
               </div>
             </nav>
@@ -151,26 +118,33 @@ $sampleOrders = [
                       </tr>
                      </thead>
                      <tbody>
-                       <?php foreach ($sampleOrders as $order) :
-                         $item = $products[$order['product_id']];
+                       <?php if (empty($userOrders)) : ?>
+                       <tr>
+                        <td colspan="5" class="text-body-secondary">No orders yet.</td>
+                       </tr>
+                       <?php else : ?>
+                       <?php foreach ($userOrders as $order) :
+                         $status = getCustomerOrderStatus($order['status']);
+                         $orderNumber = 'PLB-' . date('Y', strtotime($order['created_at'])) . '-' . str_pad((string) $order['id'], 4, '0', STR_PAD_LEFT);
                        ?>
                        <tr>
-                        <td><?= htmlspecialchars($order['id']) ?></td>
-                        <td><?= htmlspecialchars($order['date']) ?></td>
-                        <td><span class="d-flex align-items-center gap-2"><i class="bi bi-circle-fill <?= htmlspecialchars($order['status_class']) ?> font-12"></i><?= htmlspecialchars($order['status']) ?></span></td>
-                        <td><?= formatPrice($order['total']) ?></td>
+                        <td><?= htmlspecialchars($orderNumber) ?></td>
+                        <td><?= htmlspecialchars(date('d M Y', strtotime($order['created_at']))) ?></td>
+                        <td><span class="d-flex align-items-center gap-2"><i class="bi bi-circle-fill <?= htmlspecialchars($status['class']) ?> font-12"></i><?= htmlspecialchars($status['label']) ?></span></td>
+                        <td><?= formatPrice($order['total_amount']) ?></td>
                         <td>
                           <div class="d-flex align-items-center gap-3">
-                            <img src="<?= htmlspecialchars($item['image']) ?>" width="50" height="50" class="rounded-3 object-fit-cover" alt="<?= htmlspecialchars($item['name']) ?>">
+                            <img src="<?= htmlspecialchars($siteBase . ltrim($order['image'], '/')) ?>" width="50" height="50" class="rounded-3 object-fit-cover" alt="<?= htmlspecialchars($order['name']) ?>">
                             <div>
-                              <p class="mb-0 font-12 text-body-secondary"><?= htmlspecialchars($item['brand']) ?></p>
-                              <p class="mb-0 fw-semibold"><?= htmlspecialchars($item['name']) ?></p>
-                              <p class="mb-0 font-14 text-body-secondary"><?= htmlspecialchars($item['condition']) ?> · <?= htmlspecialchars($item['seller']) ?></p>
+                              <p class="mb-0 font-12 text-body-secondary"><?= htmlspecialchars($order['brand']) ?></p>
+                              <p class="mb-0 fw-semibold"><?= htmlspecialchars($order['name']) ?></p>
+                              <p class="mb-0 font-14 text-body-secondary"><?= htmlspecialchars($order['item_condition']) ?> · <?= htmlspecialchars($order['seller_name']) ?></p>
                             </div>
                           </div>
                         </td>
                        </tr>
                        <?php endforeach; ?>
+                       <?php endif; ?>
                      </tbody>
                   </table>
                </div>

@@ -3,7 +3,39 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 ?>
 <!doctype html>
 <html lang="en">
-<?php require_once APP_ROOT . '/lib/cart.php'; ?>
+<?php
+require_once APP_ROOT . '/lib/cart.php';
+require_once APP_ROOT . '/lib/auth.php';
+require_once APP_ROOT . '/lib/locations.php';
+
+$currentUser = getCurrentUser();
+$checkoutCountries = getAllCountries();
+$southAfricanProvinces = getSouthAfricanProvinces();
+$checkoutCountry = $currentUser['country'] ?? 'South Africa';
+if (!in_array($checkoutCountry, $checkoutCountries, true)) {
+    $checkoutCountry = 'South Africa';
+}
+$checkoutFirstName = '';
+$checkoutLastName = '';
+$checkoutEmail = '';
+
+if ($currentUser) {
+    $nameParts = preg_split('/\s+/', trim($currentUser['name'] ?? ''), 2);
+    $checkoutFirstName = $nameParts[0] ?? '';
+    $checkoutLastName = $nameParts[1] ?? '';
+    $checkoutEmail = $currentUser['email'] ?? '';
+}
+
+$checkoutRedirect = urlencode('pages/checkout.php');
+$cartItems = getCartItems();
+$cartSubtotal = getCartSubtotal();
+$cartCourierFee = getCartCourierFee();
+$cartTotal = getCartTotal();
+$sellerCount = getUniqueSellerCount();
+$checkoutError = $_GET['error'] ?? '';
+require_once APP_ROOT . '/lib/payment.php';
+$isFakeStripe = isFakeStripeEnabled();
+?>
 
 <head>
   <meta charset="utf-8">
@@ -58,112 +90,124 @@ require_once dirname(__DIR__) . '/bootstrap.php';
           <div class="row g-4 g-lg-5">
              <div class="col-12 col-lg-6">
                 <div class="checkout-card">
+                    <?php if ($checkoutError !== ''): ?>
+                    <div class="alert alert-danger mb-4" role="alert"><?= htmlspecialchars($checkoutError) ?></div>
+                    <?php endif; ?>
+                    <?php if (getCartCount() === 0): ?>
+                    <div class="alert alert-warning mb-4" role="alert">Your cart is empty. <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">Browse listings</a> to continue.</div>
+                    <?php endif; ?>
+                    <?php if (!isLoggedIn()): ?>
                     <div class="login-form p-4 border rounded-3">
                       <h5 class="mb-4">Sign In or Sign Up</h5>
-                      <form>
-                        <div class="d-grid gap-3">
-                           <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php" class="btn btn-dark py-2">Sign In</a> 
-                           <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/register.php" class="btn btn-outline-dark py-2">Sign Up</a> 
-                        </div>
-                      </form>
+                      <div class="d-grid gap-3">
+                         <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php?redirect=<?= $checkoutRedirect ?>" class="btn btn-dark py-2">Sign In</a>
+                         <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/register.php" class="btn btn-outline-dark py-2">Sign Up</a>
+                      </div>
+                    </div>
+                    <?php else: ?>
+                    <?php if (getCartCount() > 0): ?>
+                    <form method="post" action="<?= htmlspecialchars($siteBase) ?>checkout-actions.php">
+                      <input type="hidden" name="action" value="place_order">
+                    <?php endif; ?>
+                    <div class="login-form p-4 border rounded-3">
+                      <h5 class="mb-2">Signed in</h5>
+                      <p class="mb-0 text-body-secondary">Signed in as <?= htmlspecialchars($currentUser['name']) ?>. Continue with your details below.</p>
                     </div>
                     <div class="mt-4 checkout-form p-4 border rounded-3">
-                      <h5 class="mb-4">Fill Your Informaition</h5>
+                      <h5 class="mb-4">Fill in your information</h5>
                       <div class="row g-4">
                          <div class="col-12 col-lg-6">
                            <label for="FirstName" class="form-label">First Name</label>
-                           <input type="text" class="form-control form-control-lg border-2" id="FirstName" placeholder="First Name">
+                           <input type="text" class="form-control form-control-lg border-2" id="FirstName" name="first_name" placeholder="First Name" value="<?= htmlspecialchars($checkoutFirstName) ?>" required>
                          </div>
                          <div class="col-12 col-lg-6">
                            <label for="LastName" class="form-label">Last Name</label>
-                           <input type="text" class="form-control form-control-lg border-2" id="LastName" placeholder="Last Name">
+                           <input type="text" class="form-control form-control-lg border-2" id="LastName" name="last_name" placeholder="Last Name" value="<?= htmlspecialchars($checkoutLastName) ?>" required>
                          </div>
                          <div class="col-12 col-lg-6">
-                          <label for="EmailId" class="form-label">Email Id</label>
-                          <input type="email" class="form-control form-control-lg border-2" id="EmailId" placeholder="Email Id">
+                          <label for="EmailId" class="form-label">Email</label>
+                          <input type="email" class="form-control form-control-lg border-2" id="EmailId" name="email" placeholder="Email" value="<?= htmlspecialchars($checkoutEmail) ?>" required>
                         </div>
                         <div class="col-12 col-lg-6">
                           <label for="PhoneNumber" class="form-label">Phone Number</label>
-                          <input type="text" class="form-control form-control-lg border-2" id="PhoneNumber" placeholder="Phone Number">
+                          <input type="tel" class="form-control form-control-lg border-2" id="PhoneNumber" name="phone" placeholder="+27 82 123 4567" required>
                         </div>
-                        <div class="col-12 col-lg-12">
-                          <label for="SelectCountry" class="form-label">Select Country</label>
-                          <select class="form-select form-select-lg border-2" id="SelectCountry">
-                            <option selected>Austria</option>
-                            <option value="1">Belgium</option>
-                            <option value="2">Denmark</option>
-                            <option value="3">India</option>
+                        <div class="col-12 col-lg-12" data-checkout-country>
+                          <?php
+                          $selectId = 'SelectCountry';
+                          $selectName = 'country';
+                          $selectLabel = 'Country';
+                          $selectOptions = $checkoutCountries;
+                          $selectValue = $checkoutCountry;
+                          $selectPlaceholder = 'Type to search countries (e.g. Sou for South Africa)';
+                          $selectInputClass = 'form-control-lg';
+                          include APP_ROOT . '/views/searchable-select.php';
+                          ?>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                          <label for="TownCity" class="form-label">Town / City</label>
+                          <input type="text" class="form-control form-control-lg border-2" id="TownCity" name="city" placeholder="Johannesburg" required>
+                        </div>
+                        <div class="col-12 col-lg-6">
+                          <label for="Street" class="form-label">Street address</label>
+                          <input type="text" class="form-control form-control-lg border-2" id="Street" name="street" placeholder="42 Rivonia Road, Morningside" required>
+                        </div>
+                        <div class="col-12 col-lg-6<?= isSouthAfrica($checkoutCountry) ? '' : ' d-none' ?>" data-checkout-province-select>
+                          <label for="ChooseProvince" class="form-label">Province</label>
+                          <select class="form-select form-select-lg border-2" id="ChooseProvince" name="province">
+                            <?php foreach ($southAfricanProvinces as $province): ?>
+                            <option value="<?= htmlspecialchars($province) ?>"><?= htmlspecialchars($province) ?></option>
+                            <?php endforeach; ?>
                           </select>
                         </div>
-                        <div class="col-12 col-lg-6">
-                          <label for="TownCity" class="form-label">Town/City</label>
-                          <input type="text" class="form-control form-control-lg border-2" id="TownCity" placeholder="Town City">
+                        <div class="col-12 col-lg-6<?= isSouthAfrica($checkoutCountry) ? ' d-none' : '' ?>" data-checkout-province-text>
+                          <label for="ProvinceRegion" class="form-label">Province / State / Region</label>
+                          <input type="text" class="form-control form-control-lg border-2" id="ProvinceRegion" name="province_region" placeholder="Province, state, or region">
                         </div>
                         <div class="col-12 col-lg-6">
-                          <label for="Street" class="form-label">Street</label>
-                          <input type="text" class="form-control form-control-lg border-2" id="TownCity" placeholder="Street">
-                        </div>
-                        <div class="col-12 col-lg-6">
-                          <label for="ChooseState" class="form-label">Choose State</label>
-                          <select class="form-select form-select-lg border-2" id="ChooseState">
-                            <option selected>Alabam</option>
-                            <option value="1">Georgia</option>
-                            <option value="2">Iowa</option>
-                            <option value="3">Nevada</option>
-                          </select>
-                        </div>
-                        <div class="col-12 col-lg-6">
-                          <label for="PostalCode" class="form-label">Postal Code</label>
-                          <input type="text" class="form-control form-control-lg border-2" id="PostalCode" placeholder="Postal Code">
+                          <label for="PostalCode" class="form-label">Postal code</label>
+                          <input type="text" class="form-control form-control-lg border-2" id="PostalCode" name="postal_code" placeholder="2196" required>
                         </div>
                         <div class="col-12 col-lg-12">
                           <label for="WriteNote" class="form-label">Write Note</label>
-                          <textarea class="form-control border-2" rows="4" cols="4" placeholder="Write Something..."></textarea>
+                          <textarea class="form-control border-2" id="WriteNote" name="note" rows="4" cols="4" placeholder="Write Something..."></textarea>
                         </div>
                       </div>
                     </div>
                     <div class="mt-4 card-payment-method rounded-3 px-4 py-3 border">
                       <div class="">
                         <div class="form-check" data-bs-toggle="collapse" data-bs-target="#collapseCardDetails">
-                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                          <input class="form-check-input" type="radio" name="payment_method" id="flexRadioDefault1" value="credit-card" checked>
                           <label class="form-check-label" for="flexRadioDefault1">
                             Credit Card
                           </label>
                         </div>
-                        <div class="collapse" id="collapseCardDetails">
+                        <div class="collapse show" id="collapseCardDetails">
                           <div class="mt-3">
-                            <p>Please make your payment directly to our bank account. 
-                              Your order will be shipped once the funds have been successfully cleared.</p>
-                              <div class="card-details">
+                            <p class="mb-0">Pay securely by card<?= $isFakeStripe ? ' (demo mode — no real charge)' : '' ?>. Your order will be processed once payment is confirmed.</p>
+                              <div class="card-details mt-3">
                                 <div class="row g-4">
                                   <div class="col-12 col-lg-12">
                                     <label for="Nameoncard" class="form-label">Name on card</label>
-                                    <input type="text" class="form-control form-control-lg border-2" id="Nameoncard" placeholder="Name on card">
+                                    <input type="text" class="form-control form-control-lg border-2" id="Nameoncard" name="name_on_card" placeholder="Name on card" required>
                                   </div>
                                   <div class="col-12 col-lg-12">
-                                    <label for="CardNumbers" class="form-label">Card Numbers</label>
-                                    <div class="input-group input-group-lg">
-                                      <input type="text" class="form-control border-2" placeholder="Card Numbers">
-                                      <span class="input-group-text border-2 d-flex align-items-center  gap-3 bg-transparent">
-                                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/payment/visa.png" width="40" alt="">
-                                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/payment/stripe.png" width="40" alt="">
-                                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/payment/money.png" width="40" alt="">
-                                      </span>
-                                    </div>
+                                    <label for="CardNumbers" class="form-label">Card number</label>
+                                    <input type="text" class="form-control form-control-lg border-2" id="CardNumbers" name="card_number" placeholder="4242 4242 4242 4242" inputmode="numeric" autocomplete="cc-number" required>
                                   </div>
                                   <div class="col-12 col-lg-6">
-                                    <label for="Date" class="form-label">Date</label>
-                                    <input type="date" class="form-control form-control-lg border-2" id="Date">
+                                    <label for="Date" class="form-label">Expiry date</label>
+                                    <input type="date" class="form-control form-control-lg border-2" id="Date" name="expiry" required>
                                   </div>
                                   <div class="col-12 col-lg-6">
                                     <label for="CVV" class="form-label">CVV</label>
-                                    <input type="text" class="form-control form-control-lg border-2" id="CVV" placeholder="CVV">
+                                    <input type="text" class="form-control form-control-lg border-2" id="CVV" name="cvv" placeholder="CVV" inputmode="numeric" autocomplete="cc-csc" required>
                                   </div>
                                   <div class="col-12 col-lg-12">
                                     <div class="form-check">
-                                      <input class="form-check-input" type="checkbox" value="" id="SaveCardDetails" checked>
+                                      <input class="form-check-input" type="checkbox" value="1" id="SaveCardDetails" name="save_card">
                                       <label class="form-check-label" for="SaveCardDetails">
-                                        Save Card Details
+                                        Save card details
                                       </label>
                                     </div>
                                   </div>
@@ -173,89 +217,19 @@ require_once dirname(__DIR__) . '/bootstrap.php';
                         </div>
                       </div>
                     </div>
-                    <div class="mt-4 paypal-payment-method border rounded-3 px-4 py-3">
-                      <div class="form-check" data-bs-toggle="collapse" data-bs-target="#collapsePaypal">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="cash-on-delivery">
-                        <label class="form-check-label" for="cash-on-delivery">
-                          <span><img src="<?= htmlspecialchars($siteBase) ?>images/gallery/payment/paypal.png" width="80"></span>
-                        </label>
-                      </div>
-                      <div class="collapse" id="collapsePaypal">
-                        <div class="row mt-3">
-                          <div class="col-12 col-lg-12">
-                            <label for="EnterYourPaypalId" class="form-label">Enter Your Paypal Id</label>
-                            <input type="text" class="form-control form-control-lg border-2" id="EnterYourPaypalId" placeholder="Enter Your Paypal Id">
-                          </div>
-                          </div>
-                      </div>
-                    </div>
+                    <?php if (getCartCount() > 0): ?>
                     <div class="d-grid mt-4">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/checkout-thankyou.php" class="btn btn-dark py-2 rounded-3">Payment</a>
+                      <button type="submit" class="btn btn-dark py-2 rounded-3">Pay <?= formatPrice($cartTotal) ?></button>
                     </div>
+                    </form>
+                    <?php endif; ?>
+                    <?php endif; ?>
                 </div>
              </div>
              <div class="col-12 col-lg-6">
                 <div class="order-summary">
                   <div class="cart-list d-flex flex-column gap-4">
-                    <div class="cart-list-item d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                      <div class="d-flex align-items-center gap-3">
-                        <div class="cart-img">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/tabular-product/07.png" class="rounded-3" width="80" alt="">
-                        </div>
-                        <div class="cart-product-info">
-                          <h5 class="product-name fs-6 mb-1">Venic black pant</h5>
-                          <p>Large / Blue</p>
-                        </div>
-                      </div>
-                      <div class="cart-product-price">
-                        <h6 class="mb-0">1 X $78</h6>
-                      </div>
-                    </div>
-                    <div class="my-0 border-1 border-top"></div>
-                    <div class="cart-list-item d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                      <div class="d-flex align-items-center gap-3">
-                        <div class="cart-img">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/breast-pump.png" class="rounded-3" width="80" alt="Electric Breast Pump">
-                        </div>
-                        <div class="cart-product-info">
-                          <h5 class="product-name fs-6 mb-1">Venic black pant</h5>
-                          <p>Large / Blue</p>
-                        </div>
-                      </div>
-                      <div class="cart-product-price">
-                        <h6 class="mb-0">1 X $78</h6>
-                      </div>
-                    </div>
-                    <div class="my-0 border-1 border-top"></div>
-                    <div class="cart-list-item d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                      <div class="d-flex align-items-center gap-3">
-                        <div class="cart-img">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/tabular-product/06.png" class="rounded-3" width="80" alt="">
-                        </div>
-                        <div class="cart-product-info">
-                          <h5 class="product-name fs-6 mb-1">Venic black pant</h5>
-                          <p>Large / Blue</p>
-                        </div>
-                      </div>
-                      <div class="cart-product-price">
-                        <h6 class="mb-0">1 X $78</h6>
-                      </div>
-                    </div>
-                    <div class="my-0 border-1 border-top"></div>
-                    <div class="cart-list-item d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
-                      <div class="d-flex align-items-center gap-3">
-                        <div class="cart-img">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/tabular-product/04.png" class="rounded-3" width="80" alt="">
-                        </div>
-                        <div class="cart-product-info">
-                          <h5 class="product-name fs-6 mb-1">Venic black pant</h5>
-                          <p>Large / Blue</p>
-                        </div>
-                      </div>
-                      <div class="cart-product-price">
-                        <h6 class="mb-0">1 X $78</h6>
-                      </div>
-                    </div>
+                    <?php include APP_ROOT . '/views/cart-list.php'; ?>
                   </div>
                   <div class="card border-0 rounded-4 bg-light mt-4">
                     <div class="card-body">
@@ -275,20 +249,18 @@ require_once dirname(__DIR__) . '/bootstrap.php';
                          <div class="my-4 border-1 border-top"></div>
                          <div class="d-flex align-items-center justify-content-between mb-3">
                            <p class="mb-0">Subtotal</p>
-                           <p class="mb-0">$179.00</p>
+                           <p class="mb-0"><?= formatPrice($cartSubtotal) ?></p>
                          </div>
-                         <div class="d-flex align-items-center justify-content-between mb-3">
-                          <p class="mb-0">Discounts</p>
-                          <p class="mb-0 text-danger">-$24.00</p>
-                        </div>
+                        <?php if ($sellerCount > 0): ?>
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                          <p class="mb-0"><?= $courierPartnersShort ?></p>
-                          <p class="mb-0">+$16.00</p>
+                          <p class="mb-0"><?= $courierPartnersShort ?> (<?= $sellerCount ?> seller<?= $sellerCount === 1 ? '' : 's' ?>)</p>
+                          <p class="mb-0">+<?= formatPrice($cartCourierFee) ?></p>
                         </div>
+                        <?php endif; ?>
                         <div class="my-3 border-1 border-top"></div>
                         <div class="d-flex align-items-center justify-content-between mb-3">
                           <p class="mb-0 fs-5 fw-semibold">Total</p>
-                          <p class="mb-0 fs-5 fw-semibold">$196.56</p>
+                          <p class="mb-0 fs-5 fw-semibold"><?= formatPrice($cartTotal) ?></p>
                         </div>
                       </div>
                     </div>
@@ -345,6 +317,7 @@ require_once dirname(__DIR__) . '/bootstrap.php';
   <script src="<?= htmlspecialchars($siteBase) ?>js/search-slider.js"></script>
   <script src="<?= htmlspecialchars($siteBase) ?>js/search-modal.js"></script>
 
+  <script src="<?= htmlspecialchars($siteBase) ?>js/searchable-select.js"></script>
   <script src="<?= htmlspecialchars($siteBase) ?>js/main.js"></script>
 </body>
 

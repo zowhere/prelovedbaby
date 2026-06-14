@@ -3,7 +3,22 @@ require_once dirname(__DIR__, 2) . '/bootstrap.php';
 ?>
 <!doctype html>
 <html lang="en">
-<?php require_once APP_ROOT . '/lib/cart.php'; ?>
+<?php
+require_once APP_ROOT . '/lib/cart.php';
+require_once APP_ROOT . '/lib/auth.php';
+requireLogin();
+
+$user = findUserById(getCurrentUser()['id']);
+$nameParts = preg_split('/\s+/', trim($user['name'] ?? ''), 2);
+$firstName = $nameParts[0] ?? '';
+$lastName = $nameParts[1] ?? '';
+$userCountry = $user['country'] ?? 'South Africa';
+$profileCountries = getProfileCountries();
+$error = $_GET['error'] ?? '';
+$success = $_GET['success'] ?? '';
+$registeredSeller = ($_GET['registered'] ?? '') === 'seller';
+$accountMenuActive = 'profile';
+?>
 
 <head>
   <meta charset="utf-8">
@@ -70,54 +85,54 @@ require_once dirname(__DIR__, 2) . '/bootstrap.php';
                   <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <div class="my-account-menu w-100 border rounded-3 p-3">
-                    <div class="list-group list-group-flush">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/orders.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-bag-check"></i></span>My Orders</a>
-<a href="<?= htmlspecialchars($siteBase) ?>pages/account/payment-methods.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-wallet"></i></span>Payment Methods</a>
-                      <a href="javascript:;" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-star"></i></span>My Reviews</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3 active"><span><i class="bi bi-person-square"></i></span>My Profile</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/addresses.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-geo-alt"></i></span>Addresses</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-box-arrow-left"></i></span>Logout</a>
-                    </div>
-                  </div>
+                  <?php include APP_ROOT . '/views/account-menu.php'; ?>
                 </div>
               </div>
             </nav>
           </div>
           <div class="col-12 col-lg-9">
             <div class="my-profile">
+               <?php if ($registeredSeller): ?>
+               <div class="alert alert-success mb-4">Your seller account is ready. You can start listing baby gear from your profile.</div>
+               <?php endif; ?>
+               <?php if ($error): ?>
+               <div class="alert alert-danger mb-4"><?= htmlspecialchars($error) ?></div>
+               <?php endif; ?>
+               <?php if ($success): ?>
+               <div class="alert alert-success mb-4"><?= htmlspecialchars($success) ?></div>
+               <?php endif; ?>
                <div class="card border-0 rounded-3 bg-light">
                  <div class="card-body p-4">
                     <h5 class="mb-4">My Information</h5>
-                    <form>
+                    <form method="post" action="<?= htmlspecialchars($siteBase) ?>auth-actions.php">
+                      <input type="hidden" name="action" value="update_profile">
                       <div class="row g-3">
                         <div class="col-12 col-lg-6">
                           <label for="FirstName" class="form-label">First Name</label>
-                          <input type="text" class="form-control border-2 py-2" id="FirstName" value="Zandi">
+                          <input type="text" class="form-control border-2 py-2" id="FirstName" name="first_name" value="<?= htmlspecialchars($firstName) ?>" required autocomplete="given-name">
                         </div>
                         <div class="col-12 col-lg-6">
                           <label for="LastName" class="form-label">Last Name</label>
-                          <input type="text" class="form-control border-2 py-2" id="LastName" value="Dube">
+                          <input type="text" class="form-control border-2 py-2" id="LastName" name="last_name" value="<?= htmlspecialchars($lastName) ?>" autocomplete="family-name">
                         </div>
                         <div class="col-12 col-lg-6">
                           <label for="emailid" class="form-label">Email ID</label>
-                          <input type="text" class="form-control border-2 py-2" id="emailid" value="zandi.dube@gmail.com">
+                          <input type="text" class="form-control border-2 py-2" id="emailid" value="<?= htmlspecialchars($user['email'] ?? '') ?>" readonly>
                         </div>
                         <div class="col-12 col-lg-6">
-                          <label for="PhoneNumber" class="form-label">Phone Number</label>
-                          <input type="text" class="form-control border-2 py-2" id="PhoneNumber" value="0833603245">
+                          <label for="AccountType" class="form-label">Account Type</label>
+                          <input type="text" class="form-control border-2 py-2" id="AccountType" value="<?= htmlspecialchars($user['role_name'] ?? '') ?>" readonly>
                         </div>
                         <div class="col-12 col-lg-12">
                           <label for="SelectCountry" class="form-label">Country</label>
-                          <select class="form-select border-2 py-2" id="SelectCountry">
-                            <option selected>South Africa</option>
-                            <option value="1">Namibia</option>
-                            <option value="2">Botswana</option>
-                            <option value="3">Zimbabwe</option>
+                          <select class="form-select border-2 py-2" id="SelectCountry" name="country" required>
+                            <?php foreach ($profileCountries as $country): ?>
+                            <option value="<?= htmlspecialchars($country) ?>"<?= $country === $userCountry ? ' selected' : '' ?>><?= htmlspecialchars($country) ?></option>
+                            <?php endforeach; ?>
                           </select>
                         </div>
                         <div class="col-12 col-lg-12">
-                          <button type="button" class="btn btn-dark px-4 py-2">Save Changes</button>
+                          <button type="submit" class="btn btn-dark px-4 py-2">Save Changes</button>
                         </div>
 
                       </div>

@@ -3,6 +3,10 @@ $siteBase = $siteBase ?? '';
 if (!function_exists('getCartCount')) {
     require_once APP_ROOT . '/lib/cart.php';
 }
+if (!function_exists('isLoggedIn')) {
+    require_once APP_ROOT . '/lib/auth.php';
+}
+$currentUser = getCurrentUser();
 ?>
 <nav class="navbar navbar-expand-xl border-bottom py-3">
       <div class="container px-3">
@@ -104,31 +108,20 @@ if (!function_exists('getCartCount')) {
                   <span class="parent-menu-icon ms-2"><i class="bi bi-chevron-down"></i></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li class="nav-item dropdown">
-                    <a class="dropdown-item dropdown-toggle dropdown-toggle-nocaret d-flex align-items-center justify-content-between" href="javascript:;"
-                      data-bs-toggle="dropdown">
-                       <span>Account</span>
-                       <span><i class="bi bi-chevron-right"></i></span>
-                      </a>
-                    <ul class="dropdown-menu submenu">
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/orders.php">Orders</a></li>
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php">Profile</a></li>
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/addresses.php">Addresses</a></li>
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/payment-methods.php">Payment Methods</a></li>
-</ul>
+                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/register-seller.php">Register as a seller</a></li>
+                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/how-it-works.php">How It Works</a></li>
+                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/seller-guide.php">Seller Guide</a></li>
+                  <?php if (isLoggedIn()): ?>
+                  <li>
+                    <hr class="dropdown-divider">
                   </li>
-                  <li class="nav-item dropdown">
-                    <a class="dropdown-item dropdown-toggle dropdown-toggle-nocaret d-flex align-items-center justify-content-between" href="javascript:;"
-                      data-bs-toggle="dropdown">
-                       <span>Authentication</span>
-                       <span><i class="bi bi-chevron-right"></i></span>
-                      </a>
-                    <ul class="dropdown-menu submenu">
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php">Login</a></li>
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/register.php">Register</a></li>
-                      <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/forgot-password.php">Forgot Password</a></li>
-                    </ul>
+                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php">My Profile</a></li>
+                  <?php else: ?>
+                  <li>
+                    <hr class="dropdown-divider">
                   </li>
+                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php">Login</a></li>
+                  <?php endif; ?>
                 </ul>
               </li>
               <li class="nav-item">
@@ -146,7 +139,27 @@ if (!function_exists('getCartCount')) {
         </div>
         <div class="right-links nav gap-2 d-flex">
           <a class="nav-link" href="javascript:;" data-bs-toggle="modal" data-bs-target="#searchModal"><i class="bi bi-search"></i></a>
-          <a class="nav-link" href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php"><i class="bi bi-person-circle"></i></a>
+          <div class="dropdown">
+            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="javascript:;" data-bs-toggle="dropdown" aria-label="Account">
+              <i class="bi bi-person-circle"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <?php if (isLoggedIn()): ?>
+              <li class="px-3 py-2 text-body-secondary small">Signed in as <?= htmlspecialchars($currentUser['name']) ?></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php">My Profile</a></li>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/orders.php">My Orders</a></li>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/account/addresses.php">Addresses</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/logout.php">Logout</a></li>
+              <?php else: ?>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php">Login</a></li>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/register.php">Register</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/auth/register-seller.php">Register as a seller</a></li>
+              <?php endif; ?>
+            </ul>
+          </div>
 <a class="nav-link position-relative" data-bs-toggle="offcanvas" href="#offcanvasCart"><?php include __DIR__ . '/cart-nav-badge.php'; ?></a>
         </div>
       </div>

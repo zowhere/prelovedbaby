@@ -21,7 +21,7 @@ function findUserByEmail($email)
 function findUserById($id)
 {
     $stmt = getPdo()->prepare(
-        'SELECT u.id, u.name, u.email, u.role_id, u.is_active, u.created_at, r.slug AS role_slug, r.name AS role_name
+        'SELECT u.id, u.name, u.email, u.country, u.role_id, u.is_active, u.created_at, r.slug AS role_slug, r.name AS role_name
          FROM users u
          JOIN roles r ON r.id = u.role_id
          WHERE u.id = ? LIMIT 1'
@@ -30,31 +30,63 @@ function findUserById($id)
     return $stmt->fetch() ?: null;
 }
 
-function registerUser($name, $email, $password)
+function getRoleIdBySlug($slug)
+{
+    $stmt = getPdo()->prepare('SELECT id FROM roles WHERE slug = ? LIMIT 1');
+    $stmt->execute([$slug]);
+    $roleId = $stmt->fetchColumn();
+
+    return $roleId ? (int) $roleId : null;
+}
+
+function validateRegistrationFields($name, $email, $password)
 {
     $name = trim($name);
     $email = strtolower(trim($email));
 
     if ($name === '' || $email === '' || $password === '') {
-        return 'Please fill in all fields.';
+        return ['error' => 'Please fill in all fields.', 'name' => $name, 'email' => $email];
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        return 'Please enter a valid email address.';
+        return ['error' => 'Please enter a valid email address.', 'name' => $name, 'email' => $email];
     }
     if (strlen($password) < 8) {
-        return 'Password must be at least 8 characters.';
+        return ['error' => 'Password must be at least 8 characters.', 'name' => $name, 'email' => $email];
     }
     if (findUserByEmail($email)) {
-        return 'An account with that email already exists.';
+        return ['error' => 'An account with that email already exists.', 'name' => $name, 'email' => $email];
     }
 
-    $customerRole = getPdo()->query("SELECT id FROM roles WHERE slug = 'customer' LIMIT 1")->fetchColumn();
+    return ['error' => null, 'name' => $name, 'email' => $email];
+}
+
+function createUserAccount($name, $email, $password, $roleSlug)
+{
+    $validated = validateRegistrationFields($name, $email, $password);
+    if ($validated['error']) {
+        return $validated['error'];
+    }
+
+    $roleId = getRoleIdBySlug($roleSlug);
+    if (!$roleId) {
+        return 'Registration is unavailable. Run setup-database.php first.';
+    }
 
     getPdo()->prepare('INSERT INTO users (name, email, password_hash, role_id) VALUES (?, ?, ?, ?)')
-        ->execute([$name, $email, password_hash($password, PASSWORD_DEFAULT), (int) $customerRole]);
+        ->execute([$validated['name'], $validated['email'], password_hash($password, PASSWORD_DEFAULT), $roleId]);
 
     loginUser((int) getPdo()->lastInsertId());
     return null;
+}
+
+function registerUser($name, $email, $password)
+{
+    return createUserAccount($name, $email, $password, 'customer');
+}
+
+function registerSeller($name, $email, $password)
+{
+    return createUserAccount($name, $email, $password, 'seller');
 }
 
 function attemptLogin($email, $password)
@@ -130,10 +162,56 @@ function getCurrentUser()
     ];
 }
 
-function requireLogin($redirect = 'pages/auth/login.php')
+function getSiteBase()
+{
+    if (!defined('APP_ROOT')) {
+        return '/';
+    }
+
+    $docRoot = str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? APP_ROOT) ?: APP_ROOT);
+    $appRoot = str_replace('\\', '/', realpath(APP_ROOT) ?: APP_ROOT);
+    $siteBase = '/';
+    if (str_starts_with($appRoot, $docRoot)) {
+        $relative = substr($appRoot, strlen($docRoot));
+        if ($relative !== '' && $relative !== '/') {
+            $siteBase = rtrim($relative, '/') . '/';
+        }
+    }
+
+    return $siteBase;
+}
+
+function requireLogin($redirect = null)
 {
     if (!isLoggedIn()) {
-        header('Location: ' . $redirect);
+        header('Location: ' . ($redirect ?? getSiteBase() . 'pages/auth/login.php'));
         exit;
     }
+}
+
+function getProfileCountries()
+{
+    return ['South Africa', 'Namibia', 'Botswana', 'Zimbabwe'];
+}
+
+function updateUserProfile($userId, $firstName, $lastName, $country)
+{
+    $firstName = trim($firstName);
+    $lastName = trim($lastName);
+    $country = trim($country);
+
+    if ($firstName === '') {
+        return 'Please enter your first name.';
+    }
+    if ($country === '' || !in_array($country, getProfileCountries(), true)) {
+        return 'Please select a valid country.';
+    }
+
+    $name = $lastName !== '' ? $firstName . ' ' . $lastName : $firstName;
+
+    getPdo()->prepare('UPDATE users SET name = ?, country = ? WHERE id = ?')
+        ->execute([$name, $country, (int) $userId]);
+
+    loginUser((int) $userId);
+    return null;
 }

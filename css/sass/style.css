@@ -640,8 +640,8 @@ a {
 }
 .featured-listings-compact .featured-img-wrap--product img.featured-img,
 .featured-listings-compact .featured-img-wrap--stroller img.featured-img {
-  object-fit: contain;
-  padding: 0.5rem;
+  object-fit: cover;
+  padding: 0;
 }
 .featured-listings-compact .featured-listing-price {
   font-size: 0.95rem;
@@ -834,9 +834,9 @@ a {
 
 .product-detail-img {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  -o-object-fit: contain;
-  object-fit: contain;
+  aspect-ratio: 4 / 3;
+  -o-object-fit: cover;
+  object-fit: cover;
   -o-object-position: center;
   object-position: center;
   background-color: #fafafa;
@@ -1462,4 +1462,76 @@ button:has(i.bi.bi-heart) {
 
 i.bi.bi-heart {
   display: none !important;
+}
+
+.searchable-select-menu {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  max-height: 240px;
+  overflow-y: auto;
+  background-color: var(--bs-body-bg);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  box-shadow: var(--bs-box-shadow);
+}
+
+.searchable-select-option {
+  cursor: pointer;
+}
+
+.searchable-select-option.is-active,
+.searchable-select-option:hover {
+  background-color: var(--bs-dark);
+  color: var(--bs-white);
+}
+
+.searchable-select-empty {
+  font-size: 0.875rem;
+}
+
+.thank-you-recommendations .thank-you-recommendations-title {
+  font-size: 1.125rem;
+}
+.thank-you-recommendations .product-card--listing {
+  padding: 0.75rem;
+}
+.thank-you-recommendations .product-card--listing .d-flex.flex-column {
+  gap: 0.625rem;
+}
+.thank-you-recommendations .product-card--listing .product-img-wrap {
+  aspect-ratio: 1 / 1;
+}
+.thank-you-recommendations .product-card--listing .product-name {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+.thank-you-recommendations .product-card--listing .product-price {
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+.thank-you-recommendations .product-card--listing .listing-brand {
+  font-size: 0.625rem;
+  margin-bottom: 0.25rem;
+}
+.thank-you-recommendations .product-card--listing .seller-avatar {
+  width: 28px;
+  height: 28px;
+  max-width: 28px;
+  max-height: 28px;
+}
+.thank-you-recommendations .product-card--listing .listing-seller .font-14 {
+  font-size: 0.8125rem;
+}
+.thank-you-recommendations .product-card--listing .seller-rating-mini {
+  font-size: 0.75rem;
+}
+.thank-you-recommendations .product-card--listing .listing-location {
+  font-size: 0.75rem;
+  margin-top: 0.375rem;
+}
+.thank-you-recommendations .product-card--listing .product-cart {
+  display: none;
 }

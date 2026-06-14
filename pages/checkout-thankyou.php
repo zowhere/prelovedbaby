@@ -1,5 +1,21 @@
 <?php
 require_once dirname(__DIR__) . '/bootstrap.php';
+require_once APP_ROOT . '/lib/products.php';
+require_once APP_ROOT . '/lib/orders.php';
+
+$checkoutSuccess = $_SESSION['checkout_success'] ?? null;
+if (!$checkoutSuccess) {
+    header('Location: ' . $siteBase . 'pages/shop.php');
+    exit;
+}
+
+$orderNumber = $checkoutSuccess['order_number'] ?? formatOrderNumber($checkoutSuccess['order_id'] ?? 0);
+$customerEmail = $checkoutSuccess['email'] ?? '';
+$receiptSent = !empty($checkoutSuccess['receipt_sent']);
+
+unset($_SESSION['checkout_success']);
+
+$thankYouRecommendations = array_slice(array_values($products), 0, 3);
 ?>
 <!doctype html>
 <html lang="en">
@@ -60,8 +76,13 @@ require_once dirname(__DIR__) . '/bootstrap.php';
                  <div class="fs-1 mb-3">
                   <i class="bi bi-check-circle-fill text-success"></i>
                  </div>
-                 <p class="mb-2">Order id #AB58647</p>
+                 <p class="mb-2">Order id #<?= htmlspecialchars($orderNumber) ?></p>
                  <h5 class="mb-0 fw-semibold">Thank you for your order!</h5>
+                 <?php if ($receiptSent && $customerEmail !== ''): ?>
+                 <p class="mb-0 mt-3 text-body-secondary">A receipt has been emailed to <?= htmlspecialchars($customerEmail) ?>.</p>
+                 <?php elseif ($customerEmail !== ''): ?>
+                 <p class="mb-0 mt-3 text-body-secondary">Your order is confirmed. We could not send a receipt email — please check your inbox later or contact support.</p>
+                 <?php endif; ?>
                  <div class="mt-4">
                    <a href="<?= htmlspecialchars($siteBase) ?>index.php" class="btn btn-dark py-2 px-4 rounded-3">Continue Shopping</a>
                  </div>
@@ -71,182 +92,37 @@ require_once dirname(__DIR__) . '/bootstrap.php';
     </section>
 
         
-        <section class="py-5">
+        <section class="py-4 thank-you-recommendations">
           <div class="container px-3">
-            <div class="d-flex align-items-center justify-content-between mb-5">
-              <h2 class="section-title">You may also like</h2>
-              <div class="recommended-products-swiper-nav d-flex align-items-center gap-3">
-                <div class="slide-icon recommended-products-slider-icon-left"><i class="bi bi-arrow-left"></i></div>
-                <div class="slide-icon recommended-products-slider-icon-right"><i class="bi bi-arrow-right"></i></div>
-              </div>
-            </div>
-            <div class="recommended-products">
-              <div class="swiper recommended-products-slider">
-                <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
+            <h5 class="thank-you-recommendations-title mb-3 fw-semibold">You may also like</h5>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3">
+              <?php foreach ($thankYouRecommendations as $item): ?>
+              <div class="col">
+                <div class="product-card product-card--listing border rounded-3">
+                  <div class="d-flex flex-column">
                     <div class="position-relative product-img-wrap">
-                      <a href="product-detail-grid.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/chicco-pram.png" class="product-img img-fluid rounded-3" alt="Compact Baby Pram">
+                      <a href="<?= htmlspecialchars($siteBase . $item['url']) ?>">
+                        <img src="<?= htmlspecialchars($siteBase . $item['image']) ?>" class="product-img img-fluid rounded-3" alt="<?= htmlspecialchars($item['name']) ?>" loading="lazy">
                       </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                      </div>
                     </div>
-                      <div>
-                        <p class="listing-brand mb-1">Chicco</p>
-                        <h3 class="product-name mb-1">Compact Baby Pram</h3>
-                        <p class="mb-1 product-price">R 4,500</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/sarah-m.jpg" class="seller-avatar" alt="Sarah M." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Sarah M.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.9 · 4 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Sandton, Johannesburg</p>
-                      </div>
+                    <div>
+                      <p class="listing-brand mb-1"><?= htmlspecialchars($item['brand']) ?></p>
+                      <h3 class="product-name mb-1">
+                        <a href="<?= htmlspecialchars($siteBase . $item['url']) ?>" class="text-body text-decoration-none"><?= htmlspecialchars($item['name']) ?></a>
+                      </h3>
+                      <p class="mb-1 product-price"><?= formatPrice($item['price']) ?></p>
+                      <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
+                        <img src="<?= htmlspecialchars($siteBase . $item['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($item['seller']) ?>" width="28" height="28" loading="lazy">
+                        <span class="flex-grow-1">
+                          <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($item['seller']) ?></span>
+                          <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> <?= htmlspecialchars((string) $item['seller_rating']) ?> · <?= (int) $item['seller_reviews'] ?> reviews</span>
+                        </span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/breast-pump.png" class="product-img img-fluid rounded-3" alt="Electric Breast Pump">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Medela</p>
-                        <h3 class="product-name mb-1">Electric Breast Pump</h3>
-                        <p class="mb-1 product-price">R 2,800</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/lerato-n.jpg" class="seller-avatar" alt="Lerato N." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Lerato N.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.8 · 8 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Sea Point, Cape Town</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/baby-cot.png" class="product-img img-fluid rounded-3" alt="Wooden Baby Cot">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Stokke</p>
-                        <h3 class="product-name mb-1">Wooden Baby Cot</h3>
-                        <p class="mb-1 product-price">R 3,200</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/priya-s.jpg" class="seller-avatar" alt="Priya K." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Priya K.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 5.0 · 6 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Umhlanga, Durban</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/car-seat.jpg" class="product-img img-fluid rounded-3" alt="Group 0+ Car Seat">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Nuna</p>
-                        <h3 class="product-name mb-1">Group 0+ Car Seat</h3>
-                        <p class="mb-1 product-price">R 3,500</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/thabo-m.jpg" class="seller-avatar" alt="Thabo M." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Thabo M.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.7 · 9 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Centurion, Pretoria</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/high-chair.png" class="product-img img-fluid rounded-3" alt="Convertible High Chair">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Chicco</p>
-                        <h3 class="product-name mb-1">Convertible High Chair</h3>
-                        <p class="mb-1 product-price">R 1,800</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/chris-w.jpg" class="seller-avatar" alt="Chris W." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Chris W.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.9 · 5 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Rosebank, Johannesburg</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/bassinet.png" class="product-img img-fluid rounded-3" alt="Co-Sleeper Bassinet">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">View Listing</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Bugaboo</p>
-                        <h3 class="product-name mb-1">Co-Sleeper Bassinet</h3>
-                        <p class="mb-1 product-price">R 2,400</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/nadia-p.jpg" class="seller-avatar" alt="Nadia P." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Nadia P.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.8 · 7 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Ballito, Durban</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-                </div>
-              </div>
+              <?php endforeach; ?>
             </div>
           </div>
         </section>

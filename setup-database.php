@@ -56,6 +56,12 @@ try {
         ]);
     }
 
+    $pdo->exec(
+        "INSERT INTO roles (id, name, slug, description) VALUES
+        (6, 'Seller', 'seller', 'Marketplace seller — can list and sell items')
+        ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description)"
+    );
+
     $buyerId = (int) $pdo->query("SELECT id FROM users WHERE email = 'zoe.bulle@prelovedbaby.co.za' LIMIT 1")->fetchColumn();
     if ($buyerId > 0) {
         $pdo->exec(

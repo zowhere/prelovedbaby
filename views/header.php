@@ -6,10 +6,10 @@ $siteBase = $siteBase ?? '';
     <div class="strip-menu-left d-none d-lg-flex">
       <ul class="nav align-items-center gap-2">
         <li class="nav-item">
-          <a class="nav-link py-1" href="<?= htmlspecialchars($siteBase) ?>pages/about.php">How It Works</a>
+          <a class="nav-link py-1" href="<?= htmlspecialchars($siteBase) ?>pages/how-it-works.php">How It Works</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link py-1" href="<?= htmlspecialchars($siteBase) ?>pages/about.php">Seller Guide</a>
+          <a class="nav-link py-1" href="<?= htmlspecialchars($siteBase) ?>pages/seller-guide.php">Seller Guide</a>
         </li>
         <li class="nav-item">
           <a class="nav-link py-1" href="<?= htmlspecialchars($siteBase) ?>pages/about.php">Buyer Protection</a>

@@ -5,6 +5,9 @@ require_once dirname(__DIR__, 2) . '/bootstrap.php';
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
 <?php
+require_once APP_ROOT . '/lib/auth.php';
+requireLogin();
+$accountMenuActive = 'addresses';
 $savedAddresses = [
     [
         'label' => 'Home',
@@ -98,16 +101,7 @@ $primaryAddress = $savedAddresses[0];
                   <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <div class="my-account-menu w-100 border rounded-3 p-3">
-                    <div class="list-group list-group-flush">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/orders.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-bag-check"></i></span>My Orders</a>
-<a href="<?= htmlspecialchars($siteBase) ?>pages/account/payment-methods.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-wallet"></i></span>Payment Methods</a>
-                      <a href="javascript:;" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-star"></i></span>My Reviews</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/profile.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-person-square"></i></span>My Profile</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/account/addresses.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3 active"><span><i class="bi bi-geo-alt"></i></span>Addresses</a>
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php" class="list-group-item list-group-item-action d-flex align-items-center gap-2 border-0 rounded-3"><span><i class="bi bi-box-arrow-left"></i></span>Logout</a>
-                    </div>
-                  </div>
+                  <?php include APP_ROOT . '/views/account-menu.php'; ?>
                 </div>
               </div>
             </nav>

@@ -21,7 +21,8 @@ INSERT INTO roles (id, name, slug, description) VALUES
   (2, 'Admin', 'admin', 'Manage users, products and orders'),
   (3, 'Manager', 'manager', 'Manage products and view users'),
   (4, 'Support', 'support', 'View dashboard and listings only'),
-  (5, 'Customer', 'customer', 'Marketplace customer — no admin access')
+  (5, 'Customer', 'customer', 'Marketplace customer — no admin access'),
+  (6, 'Seller', 'seller', 'Marketplace seller — can list and sell items')
 ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description);
 
 CREATE TABLE permissions (
@@ -45,6 +46,7 @@ CREATE TABLE users (
   role_id INT NOT NULL DEFAULT 5,
   name VARCHAR(120) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
+  country VARCHAR(80) NOT NULL DEFAULT 'South Africa',
   password_hash VARCHAR(255) NOT NULL,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

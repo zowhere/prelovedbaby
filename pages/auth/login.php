@@ -7,8 +7,12 @@ require_once dirname(__DIR__, 2) . '/bootstrap.php';
 require_once APP_ROOT . '/lib/auth.php';
 require_once APP_ROOT . '/lib/rbac.php';
 $error = $_GET['error'] ?? '';
+$redirect = $_GET['redirect'] ?? 'pages/account/profile.php';
+if (!str_starts_with($redirect, 'pages/') || str_contains($redirect, '..') || str_contains($redirect, '//')) {
+    $redirect = 'pages/account/profile.php';
+}
 if (isLoggedIn()) {
-    header('Location: ' .  . (can('dashboard.view') ? 'admin/index.php' : 'pages/account/profile.php'));
+    header('Location: ' . $siteBase . (can('dashboard.view') ? 'admin/index.php' : $redirect));
     exit;
 }
 ?>
@@ -68,11 +72,13 @@ if (isLoggedIn()) {
                <div class="auth-register p-4 p-sm-5 rounded-3 border">
                   <h4 class="mb-0">Login</h4>
                   <p>Don't have an account yet? <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/register.php" class="text-decoration-underline link-body-emphasis">Sign Up</a></p>
+                  <p class="mb-0">Selling baby gear? <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/register-seller.php" class="text-decoration-underline link-body-emphasis">Register as a seller</a></p>
                   <?php if ($error): ?>
                   <div class="alert alert-danger mt-4 mb-0"><?= htmlspecialchars($error) ?></div>
                   <?php endif; ?>
                   <form class="form-body mt-5" method="post" action="<?= htmlspecialchars($siteBase) ?>auth-actions.php">
                     <input type="hidden" name="action" value="login">
+                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect) ?>">
                     <div class="row row-cols-1 g-3">
                        <div class="col">
                           <label for="EmailAddress" class="form-label">Email address</label>

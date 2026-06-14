@@ -114,7 +114,7 @@ $inCart = in_array($productId, $_SESSION['cart'], true);
                 <h2 class="mb-0"><?= htmlspecialchars($product['name']) ?></h2>
                 <div class="d-flex align-items-center gap-2 my-3 flex-wrap">
                   <a href="<?= $sellerProfileUrl ?>" class="listing-seller d-inline-flex align-items-center gap-2 text-decoration-none">
-                    <img src="<?= htmlspecialchars($product['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($product['seller']) ?>" width="36" height="36" loading="lazy">
+                    <img src="<?= htmlspecialchars($siteBase . $product['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($product['seller']) ?>" width="36" height="36" loading="lazy">
                     <span>
                       <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($product['seller']) ?></span>
                       <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> <?= number_format($product['seller_rating'], 1) ?> · <?= (int) $product['seller_reviews'] ?> reviews</span>
@@ -129,7 +129,7 @@ $inCart = in_array($productId, $_SESSION['cart'], true);
 
                   <div class="seller-profile-card mt-4">
                     <div class="d-flex align-items-start gap-3">
-                      <img src="<?= htmlspecialchars($product['seller_avatar']) ?>" class="seller-avatar seller-avatar-lg" alt="<?= htmlspecialchars($product['seller']) ?>" width="72" height="72" loading="lazy">
+                      <img src="<?= htmlspecialchars($siteBase . $product['seller_avatar']) ?>" class="seller-avatar seller-avatar-lg" alt="<?= htmlspecialchars($product['seller']) ?>" width="72" height="72" loading="lazy">
                       <div class="flex-grow-1">
                         <div class="d-flex align-items-start justify-content-between gap-2 flex-wrap">
                           <div>

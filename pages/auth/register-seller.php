@@ -15,7 +15,7 @@ if (isLoggedIn()) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PreLoved Baby</title>
+  <title>Register as a seller · PreLoved Baby</title>
   
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,12 +48,12 @@ if (isLoggedIn()) {
     
     <section class="section-breadcrumb bg-img-page-header d-flex align-items-center justify-content-center">
       <div class="container px-3 d-flex flex-column align-items-center justify-content-center">
-        <h2>Create an account</h2>
+        <h2>Register as a seller</h2>
         <nav>
           <ol class="breadcrumb mb-0 gap-2">
             <li class="breadcrumb-item"><a href="<?= htmlspecialchars($siteBase) ?>index.php" class="breadcrumb-link">Home</a></li>
             <li><i class="bi bi-chevron-right"></i></li>
-            <li class="breadcrumb-item breadcrumb-active">Create an account</li>
+            <li class="breadcrumb-item breadcrumb-active">Register as a seller</li>
           </ol>
         </nav>
       </div>
@@ -65,14 +65,14 @@ if (isLoggedIn()) {
            <div class="row g-4 g-lg-5 align-items-center">
              <div class="col-12 col-xl-6">
                <div class="auth-register p-4 p-sm-5 rounded-3 border">
-                  <h4 class="mb-0">Create an account</h4>
-                  <p>I already have an account <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php" class="text-decoration-underline link-body-emphasis">Sign In</a></p>
-                  <p class="mb-0">Want to sell? <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/register-seller.php" class="text-decoration-underline link-body-emphasis">Create a seller account</a></p>
+                  <h4 class="mb-0">Register as a seller</h4>
+                  <p>Create a seller account to list baby gear. Already registered? <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/login.php" class="text-decoration-underline link-body-emphasis">Sign In</a></p>
+                  <p class="mb-0">Buying only? <a href="<?= htmlspecialchars($siteBase) ?>pages/auth/register.php" class="text-decoration-underline link-body-emphasis">Create a customer account</a></p>
                   <?php if ($error): ?>
                   <div class="alert alert-danger mt-4 mb-0"><?= htmlspecialchars($error) ?></div>
                   <?php endif; ?>
                   <form class="form-body mt-5" method="post" action="<?= htmlspecialchars($siteBase) ?>auth-actions.php">
-                    <input type="hidden" name="action" value="register">
+                    <input type="hidden" name="action" value="register_seller">
                     <div class="row row-cols-1 g-3">
                        <div class="col">
                           <label for="FullName" class="form-label">Full name</label>
@@ -100,13 +100,13 @@ if (isLoggedIn()) {
                         <div class="form-check">
                           <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" required>
                           <label class="form-check-label" for="flexCheckChecked">
-                            I agree to the User Terms
+                            I agree to the Seller Terms
                           </label>
                         </div>
                       </div>
                       <div class="col">
                         <div class="d-grid">
-                          <button type="submit" class="btn btn-dark btn-lg px-4 rounded-3"><span class="fs-6">Create Account</span></button>
+                          <button type="submit" class="btn btn-dark btn-lg px-4 rounded-3"><span class="fs-6">Create Seller Account</span></button>
                         </div>
                       </div>
                     </div>

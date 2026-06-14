@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
+<?php if (!isset($siteBase)) { require_once APP_ROOT . '/bootstrap.php'; } ?>
 
   <head>
     <meta charset="utf-8" />
@@ -615,7 +616,7 @@
                   <?php $qv = $products['chicco-pram']; ?>
                   <div class="d-flex align-items-center gap-2 my-3">
                     <a href="seller-profile.php" class="listing-seller d-inline-flex align-items-center gap-2 text-decoration-none">
-                      <img src="<?= htmlspecialchars($qv['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($qv['seller']) ?>" width="36" height="36" loading="lazy">
+                      <img src="<?= htmlspecialchars($siteBase . $qv['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($qv['seller']) ?>" width="36" height="36" loading="lazy">
                       <span>
                         <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($qv['seller']) ?></span>
                         <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> <?= number_format($qv['seller_rating'], 1) ?> · <?= (int) $qv['seller_reviews'] ?> reviews</span>
