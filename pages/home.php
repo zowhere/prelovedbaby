@@ -4,6 +4,15 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 <!doctype html>
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
+<?php
+require_once APP_ROOT . '/lib/categories.php';
+$homeCategories = array_values(array_filter(
+    loadNavCategories(),
+    static function ($category) {
+        return getCategoryImagePath($category['slug']) !== null;
+    }
+));
+?>
 
   <head>
     <meta charset="utf-8" />
@@ -225,98 +234,40 @@ require_once dirname(__DIR__) . '/bootstrap.php';
         <div class="container position-relative px-3">
           <div class="d-flex align-items-center justify-content-between mb-5">
             <h2 class="section-title">Essential Baby Gear</h2>
-            <a href="shop-grid-catgories.php" class="btn btn-outline-dark px-4"
+            <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn btn-outline-dark px-4"
               >Browse Categories</a
             >
           </div>
           <div class="categories-catalog">
             <div class="swiper categories-slider">
               <div class="swiper-wrapper">
+                <?php foreach ($homeCategories as $category) :
+                    $imagePath = getCategoryImagePath($category['slug']);
+                    if ($imagePath === null) {
+                        continue;
+                    }
+                    $listingLabel = (int) $category['listing_count'] === 1
+                        ? '1 Listing'
+                        : (int) $category['listing_count'] . ' Listings';
+                ?>
                 <div class="swiper-slide">
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
+                  <a href="<?= categoryShopUrl($category['slug'], $siteBase) ?>">
                     <div class="d-flex flex-column align-items-center gap-3">
                       <img
-                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/breast-pumps.jpg"
+                        src="<?= htmlspecialchars($siteBase) ?><?= htmlspecialchars($imagePath) ?>"
                         class="cat-img rounded-circle"
-                        alt="Branded breast pumps"
+                        alt="<?= htmlspecialchars($category['name']) ?>"
                         loading="lazy"
                         decoding="async"
                       />
                       <div class="text-center">
-                        <h3 class="cat-title mb-0">Breast Pumps</h3>
-                        <p class="mb-0 cat-number">Medela, Spectra &amp; more</p>
+                        <h3 class="cat-title mb-0"><?= htmlspecialchars($category['name']) ?></h3>
+                        <p class="mb-0 cat-number"><?= htmlspecialchars($listingLabel) ?></p>
                       </div>
                     </div>
                   </a>
                 </div>
-                <div class="swiper-slide">
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
-                    <div class="d-flex flex-column align-items-center gap-3">
-                      <img
-                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/prams.jpg"
-                        class="cat-img rounded-circle"
-                        alt="Prams and strollers"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div class="text-center">
-                        <h3 class="cat-title mb-0">Prams & Strollers</h3>
-                        <p class="mb-0 cat-number">24 Listings</p>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="swiper-slide">
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
-                    <div class="d-flex flex-column align-items-center gap-3">
-                      <img
-                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/car-seats.jpg"
-                        class="cat-img rounded-circle"
-                        alt="Car seats"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div class="text-center">
-                        <h3 class="cat-title mb-0">Car Seats</h3>
-                        <p class="mb-0 cat-number">22 Listings</p>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="swiper-slide">
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
-                    <div class="d-flex flex-column align-items-center gap-3">
-                      <img
-                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/nursery-furniture.jpg"
-                        class="cat-img rounded-circle"
-                        alt="Nursery furniture"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div class="text-center">
-                        <h3 class="cat-title mb-0">Nursery Furniture</h3>
-                        <p class="mb-0 cat-number">31 Listings</p>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="swiper-slide">
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">
-                    <div class="d-flex flex-column align-items-center gap-3">
-                      <img
-                        src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/bassinets.jpg"
-                        class="cat-img rounded-circle"
-                        alt="Bassinets"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <div class="text-center">
-                        <h3 class="cat-title mb-0">Bassinets</h3>
-                        <p class="mb-0 cat-number">15 Listings</p>
-                      </div>
-                    </div>
-                  </a>
-                </div>
+                <?php endforeach; ?>
               </div>
             </div>
           </div>

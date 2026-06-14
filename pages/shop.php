@@ -3,10 +3,20 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 ?>
 <!doctype html>
 <html lang="en">
-<?php require_once APP_ROOT . '/lib/cart.php'; ?>
 <?php
+require_once APP_ROOT . '/lib/cart.php';
+require_once APP_ROOT . '/lib/categories.php';
+
+$activeCategorySlug = trim($_GET['category'] ?? '');
+$activeCategory = $activeCategorySlug !== '' ? getCategoryBySlug($activeCategorySlug) : null;
 $shopProducts = array_values($products);
+
+if ($activeCategory) {
+    $shopProducts = filterProductsByCategorySlug($shopProducts, $activeCategorySlug);
+}
+
 $shopProductCount = count($shopProducts);
+$filterCategories = loadNavCategories();
 ?>
 
 <head>
@@ -53,12 +63,18 @@ $shopProductCount = count($shopProducts);
     
     <section class="section-breadcrumb bg-img-page-header d-flex align-items-center justify-content-center">
       <div class="container px-3 d-flex flex-column align-items-center justify-content-center">
-        <h2>Browse Listings</h2>
+        <h2><?= $activeCategory ? htmlspecialchars($activeCategory['name']) : 'Browse Listings' ?></h2>
         <nav>
           <ol class="breadcrumb mb-0 gap-2">
             <li class="breadcrumb-item"><a href="<?= htmlspecialchars($siteBase) ?>index.php" class="breadcrumb-link">Home</a></li>
             <li><i class="bi bi-chevron-right"></i></li>
+            <?php if ($activeCategory) : ?>
+            <li class="breadcrumb-item"><a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="breadcrumb-link">Browse Listings</a></li>
+            <li><i class="bi bi-chevron-right"></i></li>
+            <li class="breadcrumb-item breadcrumb-active"><?= htmlspecialchars($activeCategory['name']) ?></li>
+            <?php else : ?>
             <li class="breadcrumb-item breadcrumb-active">Browse Listings</li>
+            <?php endif; ?>
           </ol>
         </nav>
       </div>
@@ -112,31 +128,18 @@ $shopProductCount = count($shopProducts);
                         <div class="categories-filter">
                           <h5 class="mb-3">Categories</h5>
                           <div class="list-group list-group-flush mb-0 gap-2">
-                            <a href="javascript::"
-                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0">
-                              <span class="category-name">Prams &amp; Strollers</span>
-                              <span class="category-number">142</span>
+                            <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php"
+                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0<?= !$activeCategory ? ' fw-semibold' : '' ?>">
+                              <span class="category-name">All Listings</span>
+                              <span class="category-number"><?= count(array_values($products)) ?></span>
                             </a>
-                            <a href="javascript::"
-                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0">
-                              <span class="category-name">Bassinets</span>
-                              <span class="category-number">87</span>
+                            <?php foreach ($filterCategories as $category) : ?>
+                            <a href="<?= categoryShopUrl($category['slug'], $siteBase) ?>"
+                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0<?= $activeCategory && $activeCategory['slug'] === $category['slug'] ? ' fw-semibold' : '' ?>">
+                              <span class="category-name"><?= htmlspecialchars($category['name']) ?></span>
+                              <span class="category-number"><?= (int) $category['listing_count'] ?></span>
                             </a>
-                            <a href="javascript::"
-                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0">
-                              <span class="category-name">Nursery Furniture</span>
-                              <span class="category-number">156</span>
-                            </a>
-                            <a href="javascript::"
-                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0">
-                              <span class="category-name">Breast Pumps</span>
-                              <span class="category-number">94</span>
-                            </a>
-                            <a href="javascript::"
-                              class="list-group-item d-flex align-items-center justify-content-between p-0 border-bottom-0">
-                              <span class="category-name">Car Seats</span>
-                              <span class="category-number">118</span>
-                            </a>
+                            <?php endforeach; ?>
                           </div>
                         </div>
                       </div>

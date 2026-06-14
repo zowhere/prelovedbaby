@@ -3,10 +3,8 @@ require_once __DIR__ . '/../bootstrap.php';
 ?>
 <?php
 require_once APP_ROOT . '/lib/db.php';
-require_once APP_ROOT . '/lib/admin-finance.php';
 
 $pdo = getPdo();
-$finance = getAdminFinanceStats($pdo);
 
 $stats = [
     'products' => (int) $pdo->query("SELECT COUNT(*) FROM products WHERE status = 'live'")->fetchColumn(),
@@ -17,7 +15,7 @@ $stats = [
 ];
 
 $recentOrders = $pdo->query(
-    "SELECT o.id, o.total_amount, o.courier_fee, o.payment_method, o.status, o.created_at, u.name AS buyer_name
+    "SELECT o.id, o.total_amount, o.status, o.created_at, u.name AS buyer_name
      FROM orders o
      JOIN users u ON u.id = o.user_id
      ORDER BY o.created_at DESC
@@ -39,25 +37,16 @@ $adminActiveNav = 'dashboard';
 include __DIR__ . '/includes/layout-start.php';
 ?>
 
-<div class="admin-info-box admin-info-box--formal">
-  <p class="admin-info-box-notice mb-0">(order total − courier fee) × <?= (int) $finance['commission_rate_percent'] ?>% · EFT and other payment methods are not charged this fee.</p>
-</div>
-
 <div class="admin-stat-grid">
-  <div class="admin-stat-tile">
-    <div class="admin-stat-tile-label">Card sales (excl. courier)</div>
-    <p class="admin-stat-tile-value"><?= formatAdminMoney($finance['gross_card_sales']) ?></p>
-    <p class="admin-stat-tile-note"><?= (int) $finance['card_order_count'] ?> card orders completed</p>
-  </div>
-  <div class="admin-stat-tile">
-    <div class="admin-stat-tile-label">Platform revenue (3%)</div>
-    <p class="admin-stat-tile-value"><?= formatAdminMoney($finance['platform_commission']) ?></p>
-    <p class="admin-stat-tile-note">Your cut from Stripe card payments</p>
-  </div>
   <div class="admin-stat-tile">
     <div class="admin-stat-tile-label">Live listings</div>
     <p class="admin-stat-tile-value"><?= $stats['products'] ?></p>
     <p class="admin-stat-tile-note"><?= $stats['review_products'] ?> awaiting review</p>
+  </div>
+  <div class="admin-stat-tile">
+    <div class="admin-stat-tile-label">Pending orders</div>
+    <p class="admin-stat-tile-value"><?= $stats['pending_orders'] ?></p>
+    <p class="admin-stat-tile-note">Awaiting fulfilment</p>
   </div>
   <div class="admin-stat-tile">
     <div class="admin-stat-tile-label">Registered users</div>
@@ -76,28 +65,19 @@ include __DIR__ . '/includes/layout-start.php';
               <tr>
                 <th>Order</th>
                 <th>Buyer</th>
-                <th>Payment</th>
-                <th>Sale amount</th>
-                <th>Our 3%</th>
+                <th>Total</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
               <?php if (empty($recentOrders)) : ?>
-              <tr><td colspan="6" class="text-body-secondary">No orders yet.</td></tr>
+              <tr><td colspan="4" class="text-body-secondary">No orders yet.</td></tr>
               <?php else : ?>
-              <?php foreach ($recentOrders as $order) :
-                $salesBase = getOrderSalesBase($order['total_amount'], $order['courier_fee']);
-                $commission = $order['payment_method'] === 'credit-card'
-                    ? calculateCardCommission($salesBase)
-                    : 0;
-              ?>
+              <?php foreach ($recentOrders as $order) : ?>
               <tr>
                 <td>#<?= (int) $order['id'] ?></td>
                 <td><?= htmlspecialchars($order['buyer_name']) ?></td>
-                <td><?= htmlspecialchars(str_replace('-', ' ', $order['payment_method'])) ?></td>
-                <td><?= formatAdminMoney($salesBase) ?></td>
-                <td><?= $commission > 0 ? formatAdminMoney($commission) : '—' ?></td>
+                <td><?= formatAdminPrice($order['total_amount']) ?></td>
                 <td><?= adminStatusBadge($order['status']) ?></td>
               </tr>
               <?php endforeach; ?>

@@ -6,7 +6,18 @@ if (!function_exists('getCartCount')) {
 if (!function_exists('isLoggedIn')) {
     require_once APP_ROOT . '/lib/auth.php';
 }
+if (!function_exists('loadNavCategories')) {
+    require_once APP_ROOT . '/lib/categories.php';
+}
 $currentUser = getCurrentUser();
+$navCategories = loadNavCategories();
+$featuredNavCategories = array_values(array_filter(
+    $navCategories,
+    static function ($category) {
+        return getCategoryImagePath($category['slug']) !== null;
+    }
+));
+$featuredNavCategories = array_slice($featuredNavCategories, 0, 2);
 ?>
 <nav class="navbar navbar-expand-xl border-bottom py-3">
       <div class="container px-3">
@@ -42,14 +53,14 @@ $currentUser = getCurrentUser();
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">All Listings</a></li>
+                  <?php if (!empty($navCategories)) : ?>
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">Breast Pumps</a></li>
-                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">Prams &amp; Strollers</a></li>
-                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">Car Seats</a></li>
-                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">Nursery Furniture</a></li>
-                  <li><a class="dropdown-item" href="<?= htmlspecialchars($siteBase) ?>pages/shop.php">Bassinets</a></li>
+                  <?php foreach ($navCategories as $category) : ?>
+                  <li><a class="dropdown-item" href="<?= categoryShopUrl($category['slug'], $siteBase) ?>"><?= htmlspecialchars($category['name']) ?></a></li>
+                  <?php endforeach; ?>
+                  <?php endif; ?>
                 </ul>
                   </li>
               <li class="nav-item dropdown position-static">
@@ -63,41 +74,32 @@ $currentUser = getCurrentUser();
                     <div class="col">
                       <div class="list-group list-group-flush">
                         <h5 class="list-group-item mega-menu-title px-0 mb-0">Essential Baby Gear</h5>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="list-group-item mega-menu-link px-0">Breast Pumps</a>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="list-group-item mega-menu-link px-0">Prams &amp; Strollers</a>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="list-group-item mega-menu-link px-0">Car Seats</a>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="list-group-item mega-menu-link px-0">Nursery Furniture</a>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="list-group-item mega-menu-link px-0">Bassinets</a>
+                        <?php foreach ($navCategories as $category) : ?>
+                        <a href="<?= categoryShopUrl($category['slug'], $siteBase) ?>" class="list-group-item mega-menu-link px-0"><?= htmlspecialchars($category['name']) ?></a>
+                        <?php endforeach; ?>
                       </div>
                     </div>
+                    <?php foreach ($featuredNavCategories as $category) :
+                        $imagePath = getCategoryImagePath($category['slug']);
+                        if ($imagePath === null) {
+                            continue;
+                        }
+                    ?>
                     <div class="col">
                       <div class="list-group">
                         <div class="card border">
                           <div class="card-body p-2">
                             <div class="position-relative">
-                              <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/breast-pumps.jpg" class="img-fluid rounded" alt="Branded breast pumps">
+                              <img src="<?= htmlspecialchars($siteBase) ?><?= htmlspecialchars($imagePath) ?>" class="img-fluid rounded" alt="<?= htmlspecialchars($category['name']) ?>">
                               <div class="position-absolute bottom-0 end-0 start-0 m-3">
-                                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn border bg-white px-4 rounded-3 w-100">Breast Pumps</a>
+                                <a href="<?= categoryShopUrl($category['slug'], $siteBase) ?>" class="btn border bg-white px-4 rounded-3 w-100"><?= htmlspecialchars($category['name']) ?></a>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="col">
-                      <div class="list-group">
-                        <div class="card border">
-                          <div class="card-body p-2">
-                            <div class="position-relative">
-                              <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/categories/baby/prams.jpg" class="img-fluid rounded" alt="Prams and pushchairs">
-                              <div class="position-absolute bottom-0 end-0 start-0 m-3">
-                                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn border bg-white px-4 rounded-3 w-100">Prams &amp; Pushchairs</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <?php endforeach; ?>
                   </div>
                  </div>
                 </div>

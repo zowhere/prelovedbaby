@@ -3,6 +3,7 @@ require_once __DIR__ . '/../bootstrap.php';
 ?>
 <?php
 require_once APP_ROOT . '/lib/db.php';
+require_once APP_ROOT . '/lib/rbac.php';
 
 $userId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 $isEdit = $userId > 0;

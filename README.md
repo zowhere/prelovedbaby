@@ -1,6 +1,17 @@
 # PreLoved Baby
 
-PHP e-commerce site for preloved baby products.
+e-commerce site for preloved baby products.
+Live Demo: https://prelovedbaby.infinityfreeapp.com/?i=1
+
+Simulation accounts:
+Admin login (Super Admin):
+admin@prelovedbaby.co.za / Admin123!
+
+Manager login (products only):
+manager@prelovedbaby.co.za / Manager123
+
+Seller login (list items):
+seller@prelovedbaby.co.za / Seller123!
 
 ## Requirements
 
@@ -9,13 +20,10 @@ PHP e-commerce site for preloved baby products.
 
 ## Setup
 
-1. Copy config:
-   `config/config.example.php → config/config.php`
-
-2. Start MySQL
-
-3. Run server:
+Start MySQL (Homebrew MySQL 8.0), run the server, then open the setup page
 
 ```bash
+brew services start mysql@8.0
+brew services list | grep mysql
 ./start-server.sh
 ```
