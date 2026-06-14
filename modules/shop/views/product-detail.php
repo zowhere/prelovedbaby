@@ -15,7 +15,6 @@ $inCart = in_array($productId, $_SESSION['cart'], true);
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PreLoved Baby</title>
   
-	<link rel="icon" href="images/favicon.png" type="image/png">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
