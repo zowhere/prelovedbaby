@@ -45,7 +45,10 @@ $recentProductIds = ['chicco-pram', 'breast-pump', 'car-seat'];
           <h5 class="mb-3">Recently viewed listings</h5>
           <div class="d-flex flex-column gap-3">
             <?php foreach ($recentProductIds as $productId) :
-              $recent = $products[$productId];
+              $recent = $products[$productId] ?? null;
+              if ($recent === null) {
+                  continue;
+              }
             ?>
             <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 border p-3 rounded-3">
               <a href="<?= htmlspecialchars($recent['url']) ?>">
