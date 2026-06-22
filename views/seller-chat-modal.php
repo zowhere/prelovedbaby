@@ -23,7 +23,7 @@
       </div>
       <div class="p-2 border-top bg-white">
         <div class="input-group input-group-sm px-1">
-          <input type="text" class="form-control rounded-pill border-2" placeholder="Say hello..." aria-label="Message">
+          <input type="text" class="form-control rounded-pill border-2 seller-chat-input" placeholder="Say hello..." aria-label="Message">
           <button class="btn btn-dark rounded-circle seller-chat-send ms-1 flex-shrink-0" type="button" style="width:34px;height:34px;padding:0"><i class="bi bi-send"></i></button>
         </div>
       </div>

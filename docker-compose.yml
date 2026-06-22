@@ -16,6 +16,9 @@ services:
     build: .
     ports:
       - "8080:80"
+    volumes:
+      # Keep gallery images in sync with local files (tunnel shares this container).
+      - ./images:/var/www/html/images:ro
     environment:
       DB_HOST: db
       DB_NAME: prelovedbaby

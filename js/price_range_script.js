@@ -1,79 +1,115 @@
-$(document).ready(function(){
-	
-	$('#price-range-submit').hide();
+$(function () {
+  var $slider = $('#slider-range');
+  var $minInput = $('#min_price');
+  var $maxInput = $('#max_price');
+  var $listings = $('.product-card--listing[data-price]');
 
-	$("#min_price,#max_price").on('change', function () {
+  if (!$slider.length || !$listings.length) {
+    return;
+  }
 
-	  $('#price-range-submit').show();
+  var sliderMin = parseInt($slider.data('min'), 10);
+  var sliderMax = parseInt($slider.data('max'), 10);
 
-	  var min_price_range = parseInt($("#min_price").val());
+  if (isNaN(sliderMin)) {
+    sliderMin = 0;
+  }
 
-	  var max_price_range = parseInt($("#max_price").val());
+  if (isNaN(sliderMax) || sliderMax < sliderMin) {
+    sliderMax = sliderMin;
+  }
 
-	  if (min_price_range > max_price_range) {
-		$('#max_price').val(min_price_range);
-	  }
+  var searchQuery = (new URLSearchParams(window.location.search)).get('q');
+  if (searchQuery) {
+    searchQuery = searchQuery.toLowerCase();
+  }
 
-	  $("#slider-range").slider({
-		values: [min_price_range, max_price_range]
-	  });
-	  
-	});
+  function matchesSearch($card) {
+    if (!searchQuery) {
+      return true;
+    }
 
+    return $card.text().toLowerCase().indexOf(searchQuery) !== -1;
+  }
 
-	$("#min_price,#max_price").on("paste keyup", function () {                                        
+  function applyPriceFilter() {
+    var minPrice = parseInt($minInput.val(), 10);
+    var maxPrice = parseInt($maxInput.val(), 10);
+    var visible = 0;
 
-	  $('#price-range-submit').show();
+    if (isNaN(minPrice)) {
+      minPrice = sliderMin;
+    }
 
-	  var min_price_range = parseInt($("#min_price").val());
+    if (isNaN(maxPrice)) {
+      maxPrice = sliderMax;
+    }
 
-	  var max_price_range = parseInt($("#max_price").val());
-	  
-	  if(min_price_range == max_price_range){
+    $listings.each(function () {
+      var $card = $(this);
+      var price = parseFloat($card.data('price'));
+      var inRange = price >= minPrice && price <= maxPrice;
+      var show = inRange && matchesSearch($card);
 
-			max_price_range = min_price_range + 100;
-			
-			$("#min_price").val(min_price_range);		
-			$("#max_price").val(max_price_range);
-	  }
+      $card.closest('.shop-listing-col, .col').toggle(show);
 
-	  $("#slider-range").slider({
-		values: [min_price_range, max_price_range]
-	  });
+      if (show) {
+        visible++;
+      }
+    });
 
-	});
+    $('.shop-results-count').text(visible);
+  }
 
+  function syncSliderValues(minValue, maxValue) {
+    if (minValue > maxValue) {
+      maxValue = minValue;
+      $maxInput.val(maxValue);
+    }
 
-	$(function () {
-	  $("#slider-range").slider({
-		range: true,
-		orientation: "horizontal",
-		min: 0,
-		max: 10000,
-		values: [2400, 7500],
-		step: 100,
+    $slider.slider('values', [minValue, maxValue]);
+    applyPriceFilter();
+  }
 
-		slide: function (event, ui) {
-		  if (ui.values[0] == ui.values[1]) {
-			  return false;
-		  }
-		  
-		  $("#min_price").val(ui.values[0]);
-		  $("#max_price").val(ui.values[1]);
-		}
-	  });
+  $slider.slider({
+    range: true,
+    orientation: 'horizontal',
+    min: sliderMin,
+    max: sliderMax,
+    values: [sliderMin, sliderMax],
+    step: 100,
+    slide: function (event, ui) {
+      if (ui.values[0] === ui.values[1]) {
+        return false;
+      }
 
-	  $("#min_price").val($("#slider-range").slider("values", 0));
-	  $("#max_price").val($("#slider-range").slider("values", 1));
+      $minInput.val(ui.values[0]);
+      $maxInput.val(ui.values[1]);
+    },
+    stop: function (event, ui) {
+      $minInput.val(ui.values[0]);
+      $maxInput.val(ui.values[1]);
+      applyPriceFilter();
+    }
+  });
 
-	});
+  $minInput.val(sliderMin);
+  $maxInput.val(sliderMax);
+  $minInput.attr({ min: sliderMin, max: sliderMax });
+  $maxInput.attr({ min: sliderMin, max: sliderMax });
 
-	$("#slider-range,#price-range-submit").click(function () {
+  $minInput.add($maxInput).on('change input', function () {
+    var minValue = parseInt($minInput.val(), 10);
+    var maxValue = parseInt($maxInput.val(), 10);
 
-	  var min_price = $('#min_price').val();
-	  var max_price = $('#max_price').val();
+    if (isNaN(minValue)) {
+      minValue = sliderMin;
+    }
 
-	  $("#searchResults").text("Here List of products will be shown which are cost between " + min_price  +" "+ "and" + " "+ max_price + ".");
-	});
+    if (isNaN(maxValue)) {
+      maxValue = sliderMax;
+    }
 
+    syncSliderValues(minValue, maxValue);
+  });
 });

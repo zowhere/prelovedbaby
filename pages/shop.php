@@ -16,6 +16,8 @@ if ($activeCategory) {
 }
 
 $shopProductCount = count($shopProducts);
+$shopPriceMin = $shopProductCount > 0 ? (int) min(array_column($shopProducts, 'price')) : 0;
+$shopPriceMax = $shopProductCount > 0 ? (int) max(array_column($shopProducts, 'price')) : 10000;
 $filterCategories = loadNavCategories();
 ?>
 
@@ -147,7 +149,8 @@ $filterCategories = loadNavCategories();
                     <div class="card rounded-3 mb-4 border">
                       <div class="card-body p-4">
                         <div class="price-filter">
-                          <div id="slider-range"></div>
+                          <h5 class="mb-3">Price</h5>
+                          <div id="slider-range" data-min="<?= $shopPriceMin ?>" data-max="<?= $shopPriceMax ?>"></div>
                           <div class="d-flex align-items-center justify-content-center gap-3">
                             <input class="form-control" type="number" min=0 max="9900"
                               oninput="validity.valid||(value='0');" id="min_price">
@@ -312,8 +315,8 @@ $filterCategories = loadNavCategories();
                 $imageUrl = $siteBase . ltrim($product['image'], '/');
                 $sellerAvatar = $siteBase . ltrim($product['seller_avatar'] ?? 'images/gallery/sellers/default.jpg', '/');
                 ?>
-                <div class="col">
-                  <div class="product-card product-card--listing border rounded-3 p-3">
+                <div class="col shop-listing-col">
+                  <div class="product-card product-card--listing border rounded-3 p-3" data-price="<?= (float) $product['price'] ?>">
                     <div class="d-flex flex-column gap-3">
                       <div class="position-relative product-img-wrap">
                         <span class="listing-condition-badge position-absolute top-0 start-0 m-3"><?= htmlspecialchars($product['condition']) ?></span>

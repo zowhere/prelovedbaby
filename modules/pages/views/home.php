@@ -2,6 +2,13 @@
 <html lang="en">
 <?php require_once APP_ROOT . '/lib/cart.php'; ?>
 <?php if (!isset($siteBase)) { require_once APP_ROOT . '/bootstrap.php'; } ?>
+<?php
+$bugabooFeaturedListing = $products['bugaboo-fox'] ?? null;
+$bugabooFeaturedImage = $bugabooFeaturedListing['image'] ?? 'images/gallery/deals/featured-bugaboo-stroller.jpg';
+$bugabooFeaturedImageVersion = is_file(APP_ROOT . '/' . $bugabooFeaturedImage)
+    ? (int) filemtime(APP_ROOT . '/' . $bugabooFeaturedImage)
+    : time();
+?>
 
   <head>
     <meta charset="utf-8" />
@@ -345,14 +352,14 @@
                   <a href="product-detail.php?id=bugaboo-fox" class="text-decoration-none text-body">
                   <div class="featured-img-wrap featured-img-wrap--compact featured-img-wrap--stroller">
                     <img
-                      src="images/gallery/deals/featured-bugaboo-stroller.jpg"
+                      src="<?= htmlspecialchars($bugabooFeaturedImage) ?>?v=<?= $bugabooFeaturedImageVersion ?>"
                       class="featured-img"
-                      alt="Bugaboo stroller"
+                      alt="<?= htmlspecialchars($bugabooFeaturedListing['name'] ?? 'Bugaboo stroller') ?>"
                       loading="lazy"
                       decoding="async"
                     />
                   </div>
-                  <p class="featured-listing-price mb-0 mt-2">R 12,500</p>
+                  <p class="featured-listing-price mb-0 mt-2"><?= formatPrice($bugabooFeaturedListing['price'] ?? 12500) ?></p>
                   </a>
                   <a href="product-detail.php?id=bugaboo-fox" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
                 </div>

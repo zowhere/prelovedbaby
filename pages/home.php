@@ -12,6 +12,11 @@ $homeCategories = array_values(array_filter(
         return getCategoryImagePath($category['slug']) !== null;
     }
 ));
+$bugabooFeaturedListing = $products['bugaboo-fox'] ?? null;
+$bugabooFeaturedImage = $bugabooFeaturedListing['image'] ?? 'images/gallery/deals/featured-bugaboo-stroller.jpg';
+$bugabooFeaturedImageVersion = is_file(APP_ROOT . '/' . $bugabooFeaturedImage)
+    ? (int) filemtime(APP_ROOT . '/' . $bugabooFeaturedImage)
+    : time();
 ?>
 
   <head>
@@ -295,19 +300,19 @@ $homeCategories = array_values(array_filter(
             <div class="col">
               <div class="card h-100 border featured-listing-card">
                 <div class="card-body text-center p-3">
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=bugaboo-fox" class="text-decoration-none text-body">
+                  <a href="<?= htmlspecialchars($siteBase . ($bugabooFeaturedListing['url'] ?? 'pages/product-detail.php?id=bugaboo-fox')) ?>" class="text-decoration-none text-body">
                   <div class="featured-img-wrap featured-img-wrap--compact featured-img-wrap--stroller">
                     <img
-                      src="<?= htmlspecialchars($siteBase) ?>images/gallery/deals/featured-bugaboo-stroller.jpg"
+                      src="<?= htmlspecialchars($siteBase . $bugabooFeaturedImage) ?>?v=<?= $bugabooFeaturedImageVersion ?>"
                       class="featured-img"
-                      alt="Bugaboo stroller"
+                      alt="<?= htmlspecialchars($bugabooFeaturedListing['name'] ?? 'Bugaboo stroller') ?>"
                       loading="lazy"
                       decoding="async"
                     />
                   </div>
-                  <p class="featured-listing-price mb-0 mt-2">R 12,500</p>
+                  <p class="featured-listing-price mb-0 mt-2"><?= formatPrice($bugabooFeaturedListing['price'] ?? 12500) ?></p>
                   </a>
-                  <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php?id=bugaboo-fox" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
+                  <a href="<?= htmlspecialchars($siteBase . ($bugabooFeaturedListing['url'] ?? 'pages/product-detail.php?id=bugaboo-fox')) ?>" class="btn btn-dark btn-sm px-3 mt-2">View Listing</a>
                 </div>
               </div>
             </div>
