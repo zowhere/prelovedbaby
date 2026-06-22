@@ -1,4 +1,6 @@
 <?php
+$siteBase = $siteBase ?? '/';
+
 if (!function_exists('formatPrice')) {
     require_once APP_ROOT . '/lib/cart.php';
 }
@@ -24,7 +26,7 @@ $recentProductIds = ['chicco-pram', 'breast-pump', 'car-seat'];
           <h1 class="modal-title fs-5 mb-0">Search</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form class="position-relative mt-3 site-search-form" action="pages/shop.php" method="get">
+        <form class="position-relative mt-3 site-search-form" action="<?= htmlspecialchars($siteBase) ?>pages/shop.php" method="get">
           <input type="text" name="q" class="form-control form-control-lg form-control-search pe-5 border-2"
             placeholder="Search prams, bassinets, breast pumps &amp; more" autocomplete="off">
           <button type="submit" class="btn btn-link position-absolute top-50 end-0 translate-middle-y border-0 text-body p-0" aria-label="Search">
@@ -51,8 +53,8 @@ $recentProductIds = ['chicco-pram', 'breast-pump', 'car-seat'];
               }
             ?>
             <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 border p-3 rounded-3">
-              <a href="<?= htmlspecialchars($recent['url']) ?>">
-                <img src="<?= htmlspecialchars($recent['image']) ?>" class="rounded-3" width="100" alt="<?= htmlspecialchars($recent['name']) ?>">
+              <a href="<?= htmlspecialchars($siteBase . $recent['url']) ?>">
+                <img src="<?= htmlspecialchars($siteBase . $recent['image']) ?>" class="rounded-3" width="100" alt="<?= htmlspecialchars($recent['name']) ?>">
               </a>
               <div class="flex-grow-1">
                 <h4 class="mb-1"><?= formatPrice($recent['price']) ?></h4>
@@ -60,8 +62,8 @@ $recentProductIds = ['chicco-pram', 'breast-pump', 'car-seat'];
                 <p class="mb-0 font-14 text-body-secondary"><?= htmlspecialchars($recent['condition']) ?> · <?= htmlspecialchars($recent['seller']) ?></p>
               </div>
               <div class="d-grid gap-2">
-                <a href="<?= htmlspecialchars($recent['url']) ?>" class="btn btn-dark border border-dark px-4">View Listing</a>
-                <a href="pages/shop.php" class="btn btn-light border px-4">Browse Listings</a>
+                <a href="<?= htmlspecialchars($siteBase . $recent['url']) ?>" class="btn btn-dark border border-dark px-4">View Listing</a>
+                <a href="<?= htmlspecialchars($siteBase) ?>pages/shop.php" class="btn btn-light border px-4">Browse Listings</a>
               </div>
             </div>
             <?php endforeach; ?>

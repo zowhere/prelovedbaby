@@ -1,0 +1,6 @@
+.git
+.vscode
+node_modules
+config/config.php
+.DS_Store
+**/.DS_Store

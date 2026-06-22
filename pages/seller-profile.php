@@ -59,7 +59,7 @@ require_once dirname(__DIR__) . '/bootstrap.php';
                 </div>
                 <p class="mb-3">4.9 overall · 4 reviews</p>
                 <p class="seller-listings-count mb-4">Member since March 2023 · Usually responds within 2 hours</p>
-                <a href="<?= htmlspecialchars($siteBase) ?>pages/contact.php" class="btn btn-dark w-100 rounded-5 mb-2"><i class="bi bi-chat-dots me-2"></i>Message Sarah</a>
+                <button type="button" class="btn btn-dark w-100 rounded-5 mb-2 open-seller-chat" data-bs-toggle="modal" data-bs-target="#sellerChatModal" data-seller="Sarah M." data-avatar="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/sarah-m.jpg"><i class="bi bi-chat-dots me-2"></i>Message Sarah</button>
               </div>
               <hr>
               <div class="seller-rating-breakdown">
@@ -255,11 +255,13 @@ require_once dirname(__DIR__) . '/bootstrap.php';
 
   <?php include APP_ROOT . '/views/search-modal.php'; ?>
   <?php include APP_ROOT . '/views/cart-offcanvas.php'; ?>
+  <?php include APP_ROOT . '/views/seller-chat-modal.php'; ?>
 
   <script src="<?= htmlspecialchars($siteBase) ?>js/jquery.min.js"></script>
   <script src="<?= htmlspecialchars($siteBase) ?>js/bootstrap.bundle.min.js"></script>
   <script src="plugins/swiper/js/swiper-bundle.min.js"></script>
   <script src="<?= htmlspecialchars($siteBase) ?>js/search-modal.js"></script>
+  <script src="<?= htmlspecialchars($siteBase) ?>js/seller-chat.js"></script>
   <script src="<?= htmlspecialchars($siteBase) ?>js/main.js"></script>
 </body>
 

@@ -248,4 +248,30 @@ function getProductBySlug($slug)
     return $products[$slug] ?? null;
 }
 
+function getRelatedProducts($slug, $limit = 2)
+{
+    $current = getProductBySlug($slug);
+    $products = getStorefrontProducts();
+    unset($products[$slug]);
+
+    if ($current === null) {
+        return array_slice(array_values($products), 0, $limit);
+    }
+
+    $currentCategories = $current['categories'] ?? [];
+    $related = [];
+    $others = [];
+
+    foreach ($products as $product) {
+        $sharedCategories = array_intersect($currentCategories, $product['categories'] ?? []);
+        if ($sharedCategories !== []) {
+            $related[] = $product;
+        } else {
+            $others[] = $product;
+        }
+    }
+
+    return array_slice(array_merge($related, $others), 0, $limit);
+}
+
 $products = getStorefrontProducts();

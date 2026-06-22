@@ -6,7 +6,9 @@ $(function () {
       return;
     }
 
-    window.location.href = 'shop-grid-left-sidebar.php?q=' + encodeURIComponent(term);
+    var shopUrl = $('.site-search-form').attr('action') || '/pages/shop.php';
+    var separator = shopUrl.indexOf('?') >= 0 ? '&' : '?';
+    window.location.href = shopUrl + separator + 'q=' + encodeURIComponent(term);
   }
 
   $('.site-search-form').on('submit', function (e) {

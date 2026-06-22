@@ -1,4 +1,5 @@
 <?php
+$siteBase = $siteBase ?? '/';
 $cartItems = getCartItems();
 $cartRedirect = $cartRedirect ?? basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
 ?>
@@ -12,14 +13,14 @@ $cartRedirect = $cartRedirect ?? basename($_SERVER['SCRIPT_NAME'] ?? 'index.php'
     <?php endif; ?>
     <div class="cart-product-list-item d-flex align-items-center gap-3">
       <div class="flex-shrink-0">
-        <a href="<?php echo htmlspecialchars($item['url']); ?>">
-          <img src="<?php echo htmlspecialchars($item['image']); ?>" width="100" class="cart-product-img rounded-3" alt="<?php echo htmlspecialchars($item['name']); ?>">
+        <a href="<?php echo htmlspecialchars($siteBase . $item['url']); ?>">
+          <img src="<?php echo htmlspecialchars($siteBase . $item['image']); ?>" width="100" class="cart-product-img rounded-3" alt="<?php echo htmlspecialchars($item['name']); ?>">
         </a>
       </div>
       <div class="cart-product-info flex-grow-1">
         <p class="mb-1 cart-product-name"><?php echo htmlspecialchars($item['name']); ?></p>
         <h5 class="mb-0 cart-product-price"><?php echo formatPrice($item['price']); ?></h5>
-        <form action="cart-actions.php" method="post" class="d-flex align-items-center justify-content-end mt-2">
+        <form action="<?php echo htmlspecialchars($siteBase); ?>cart-actions.php" method="post" class="d-flex align-items-center justify-content-end mt-2">
           <input type="hidden" name="action" value="remove">
           <input type="hidden" name="id" value="<?php echo htmlspecialchars($item['id']); ?>">
           <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($cartRedirect); ?>">

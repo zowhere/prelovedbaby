@@ -1160,14 +1160,75 @@ a {
     }
   }
 
+  #customer-reviews {
+    > div > h5 {
+      margin-bottom: 1rem;
+    }
+
+    #rating-number h2 {
+      font-size: 1.75rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .seller-rating-breakdown .rating-row {
+      margin-bottom: 0.45rem;
+    }
+  }
+
   .customer-reviews-list {
+    margin-top: 1.25rem;
+    max-height: 20rem;
+    overflow-y: auto;
+    padding-right: 0.35rem;
+    -webkit-overflow-scrolling: touch;
+
+    .customer-reviews-list-item {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+
     .customer-pic {
       @include alignContent();
-      font-size: 24px;
-      width: 50px;
-      height: 50px;
+      font-size: 18px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background-color: #e3e4e5;
+    }
+
+    .review-description {
+      margin-top: 0.35rem;
+
+      p {
+        font-size: 0.9375rem;
+        line-height: 1.45;
+      }
+
+      > .d-flex {
+        margin-top: 0.5rem;
+
+        span {
+          font-size: 0.8125rem;
+        }
+
+        .btn-sm {
+          padding: 0.15rem 0.45rem;
+          font-size: 0.8125rem;
+        }
+      }
+    }
+
+    .seller-review-tags {
+      margin-bottom: 0.35rem;
+    }
+
+    .review-date span {
+      font-size: 0.8125rem;
+      color: #6c757d;
+    }
+
+    .customer-name {
+      font-size: 0.9375rem;
     }
   }
 }
@@ -1282,6 +1343,58 @@ a {
 
 .searchable-select-empty {
   font-size: 0.875rem;
+}
+
+.product-detail-recommendations {
+  .product-detail-recommendations-title {
+    font-size: 1.125rem;
+  }
+
+  .product-detail-recommendations-grid {
+    max-width: 28rem;
+  }
+
+  .product-card--listing {
+    padding: 0.75rem;
+
+    .d-flex.flex-column {
+      gap: 0.625rem;
+    }
+
+    .product-img-wrap {
+      aspect-ratio: 1 / 1;
+    }
+
+    .product-name {
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .product-price {
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .listing-brand {
+      font-size: 0.625rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .seller-avatar {
+      width: 28px;
+      height: 28px;
+      max-width: 28px;
+      max-height: 28px;
+    }
+
+    .listing-seller .font-14 {
+      font-size: 0.8125rem;
+    }
+
+    .seller-rating-mini {
+      font-size: 0.75rem;
+    }
+  }
 }
 
 .thank-you-recommendations {

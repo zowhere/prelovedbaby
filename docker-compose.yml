@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: prelovedbaby
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: prelovedbaby
+      DB_USER: root
+      DB_PASS: root
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Public URL for sharing with friends (free, no account needed).
+  # Start with: docker compose --profile share up -d
+  # Then run:   ./share-url.sh
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://web:80
+    depends_on:
+      - web
+    profiles:
+      - share
+
+volumes:
+  db_data:

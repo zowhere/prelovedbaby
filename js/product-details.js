@@ -27,29 +27,3 @@ if (document.querySelector('.product-images-swiper-thumbnail')) {
   });
 }
 
-if (document.querySelector('.recommended-products-slider')) {
-  // Related listings carousel below the product details.
-  new Swiper('.recommended-products-slider', {
-    slidesPerView: 2,
-    spaceBetween: 16,
-    loop: true,
-    navigation: {
-      nextEl: '.recommended-products-slider-icon-left',
-      prevEl: '.recommended-products-slider-icon-right',
-    },
-    breakpoints: {
-      640: {
-        slidesPerView: 2,
-        spaceBetween: 24,
-      },
-      768: {
-        slidesPerView: 3,
-        spaceBetween: 24,
-      },
-      1024: {
-        slidesPerView: 4,
-        spaceBetween: 24,
-      },
-    },
-  });
-}

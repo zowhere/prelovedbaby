@@ -13,6 +13,7 @@ if ($product === null) {
 }
 $inCart = in_array($productId, $_SESSION['cart'], true);
 $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
+$relatedProducts = getRelatedProducts($productId, 2);
 ?>
 
 <head>
@@ -115,7 +116,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                 <p class="mb-1"><?= htmlspecialchars($product['brand']) ?> &middot; <?= htmlspecialchars($product['condition']) ?></p>
                 <h2 class="mb-0"><?= htmlspecialchars($product['name']) ?></h2>
                 <div class="d-flex align-items-center gap-2 my-3 flex-wrap">
-                  <a href="<?= $sellerProfileUrl ?>" class="listing-seller d-inline-flex align-items-center gap-2 text-decoration-none">
+                  <a href="<?= htmlspecialchars($siteBase . $sellerProfileUrl) ?>" class="listing-seller d-inline-flex align-items-center gap-2 text-decoration-none">
                     <img src="<?= htmlspecialchars($siteBase . $product['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($product['seller']) ?>" width="36" height="36" loading="lazy">
                     <span>
                       <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($product['seller']) ?></span>
@@ -201,7 +202,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                        <button type="submit" class="btn btn-dark border border-2 rounded-5 border-dark py-2 px-5 d-flex align-items-center justify-content-center gap-2 w-100"><i class="bi bi-cart-plus"></i>Add to cart</button>
                      </form>
                     <?php endif; ?>
-                     <a href="<?= htmlspecialchars($siteBase) ?>pages/contact.php" class="btn border border-2 py-2 px-5 rounded-5 d-flex align-items-center justify-content-center gap-2 text-decoration-none"><i class="bi bi-chat-dots"></i>Message <?= htmlspecialchars($sellerFirstName) ?></a>
+                     <button type="button" class="btn border border-2 py-2 px-5 rounded-5 d-flex align-items-center justify-content-center gap-2 open-seller-chat" data-bs-toggle="modal" data-bs-target="#sellerChatModal" data-seller="<?= htmlspecialchars($product['seller']) ?>" data-avatar="<?= htmlspecialchars($siteBase . $product['seller_avatar']) ?>"><i class="bi bi-chat-dots"></i>Message <?= htmlspecialchars($sellerFirstName) ?></button>
                   </div>
 
                   <div class="mt-4">
@@ -249,8 +250,8 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                </div>
                <div class="tab-pane fade show" id="customer-reviews">
                 <div>
-                  <h5 class="mb-4">Reviews for <?= htmlspecialchars($product['seller']) ?></h5>
-                  <div class="hstack gap-md-5 gap-4 flex-column flex-lg-row">
+                  <h5 class="mb-3">Reviews for <?= htmlspecialchars($product['seller']) ?></h5>
+                  <div class="hstack gap-md-4 gap-3 flex-column flex-lg-row">
                     <div class="text-center flex-shrink-0">
                       <div id="rating-number">
                           <h2 class="mb-2">4.9</h2>
@@ -293,8 +294,8 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                     </div>
                   </div>
                   
-                  <div class="customer-reviews-list mt-5">
-                    <div class="customer-reviews-list-item border-top py-4">
+                  <div class="customer-reviews-list mt-4">
+                    <div class="customer-reviews-list-item border-top py-3">
                        <div class="d-flex align-items-start gap-3">
                         <div class="customer-pic">
                           <span>N</span>
@@ -326,7 +327,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                            </div>
                       </div>
                     </div>
-                    <div class="customer-reviews-list-item border-top py-4">
+                    <div class="customer-reviews-list-item border-top py-3">
                       <div class="d-flex align-items-start gap-3">
                        <div class="customer-pic">
                          <span>J</span>
@@ -358,7 +359,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                           </div>
                      </div>
                    </div>
-                   <div class="customer-reviews-list-item border-top py-4">
+                   <div class="customer-reviews-list-item border-top py-3">
                     <div class="d-flex align-items-start gap-3">
                      <div class="customer-pic">
                        <span>T</span>
@@ -390,7 +391,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                         </div>
                    </div>
                  </div>
-                   <div class="customer-reviews-list-item border-top py-4 border-bottom">
+                   <div class="customer-reviews-list-item border-top py-3 border-bottom">
                     <div class="d-flex align-items-start gap-3">
                      <div class="customer-pic">
                        <span>L</span>
@@ -422,7 +423,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
                         </div>
                    </div>
                  </div>
-                  <div class="text-center mt-4">
+                  <div class="text-center mt-3">
                     <a href="<?= $sellerProfileUrl ?>" class="btn btn-outline-dark px-4 py-2">See all reviews</a>
                    </div>
                   </div>
@@ -449,158 +450,43 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
     
 
     
-    <section class="py-5">
+    <?php if ($relatedProducts !== []): ?>
+    <section class="py-4 product-detail-recommendations">
       <div class="container px-3">
-        <div class="d-flex align-items-center justify-content-between mb-5">
-          <h2 class="section-title">You May Also Like</h2>
-          <div class="recommended-products-swiper-nav d-flex align-items-center gap-3">
-            <div class="slide-icon recommended-products-slider-icon-left"><i class="bi bi-arrow-left"></i></div>
-            <div class="slide-icon recommended-products-slider-icon-right"><i class="bi bi-arrow-right"></i></div>
-          </div>
-        </div>
-        <div class="recommended-products">
-          <div class="swiper recommended-products-slider">
-            <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/breast-pump.png" class="product-img img-fluid rounded-3" alt="Electric Breast Pump">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">Add to cart</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Medela</p>
-                        <h3 class="product-name mb-1">Electric Breast Pump</h3>
-                        <p class="mb-1 product-price">R 2,800</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/lerato-n.jpg" class="seller-avatar" alt="Lerato N." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Lerato N.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.8 · 8 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Sea Point, Cape Town</p>
-                      </div>
-                  </div>
+        <h5 class="product-detail-recommendations-title mb-3 fw-semibold">You may also like</h5>
+        <div class="row row-cols-2 g-3 product-detail-recommendations-grid">
+          <?php foreach ($relatedProducts as $item): ?>
+          <?php $itemSellerUrl = ($item['seller'] === 'Sarah M.') ? 'pages/seller-profile.php' : 'pages/contact.php'; ?>
+          <div class="col">
+            <div class="product-card product-card--listing border rounded-3">
+              <div class="d-flex flex-column">
+                <div class="position-relative product-img-wrap">
+                  <a href="<?= htmlspecialchars($siteBase . $item['url']) ?>">
+                    <img src="<?= htmlspecialchars($siteBase . $item['image']) ?>" class="product-img img-fluid rounded-3" alt="<?= htmlspecialchars($item['name']) ?>" loading="lazy">
+                  </a>
                 </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/baby-cot.png" class="product-img img-fluid rounded-3" alt="Wooden Baby Cot">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">Add to cart</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Stokke</p>
-                        <h3 class="product-name mb-1">Wooden Baby Cot</h3>
-                        <p class="mb-1 product-price">R 3,200</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/priya-s.jpg" class="seller-avatar" alt="Priya K." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Priya K.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 5.0 · 6 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Umhlanga, Durban</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/car-seat.jpg" class="product-img img-fluid rounded-3" alt="Group 0+ Car Seat">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">Add to cart</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Nuna</p>
-                        <h3 class="product-name mb-1">Group 0+ Car Seat</h3>
-                        <p class="mb-1 product-price">R 3,500</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/thabo-m.jpg" class="seller-avatar" alt="Thabo M." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Thabo M.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.7 · 9 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Centurion, Pretoria</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/high-chair.png" class="product-img img-fluid rounded-3" alt="Convertible High Chair">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">Add to cart</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Chicco</p>
-                        <h3 class="product-name mb-1">Convertible High Chair</h3>
-                        <p class="mb-1 product-price">R 1,800</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/chris-w.jpg" class="seller-avatar" alt="Chris W." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Chris W.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.9 · 5 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Rosebank, Johannesburg</p>
-                      </div>
-                  </div>
-                </div>
-              </div>
-              <div class="swiper-slide">
-                <div class="product-card product-card--listing border rounded-3 p-3">
-                  <div class="d-flex flex-column gap-3">
-                    <div class="position-relative product-img-wrap">
-                      <a href="<?= htmlspecialchars($siteBase) ?>pages/product-detail.php">
-                        <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/products/recommended/bassinet.png" class="product-img img-fluid rounded-3" alt="Co-Sleeper Bassinet">
-                      </a>
-                      <div class="position-absolute bottom-0 start-0 end-0 m-3 product-cart">
-                        <a href="javascript:;" class="btn btn-dark rounded-5 w-100">Add to cart</a>
-                      </div>
-                    </div>
-                      <div>
-                        <p class="listing-brand mb-1">Bugaboo</p>
-                        <h3 class="product-name mb-1">Co-Sleeper Bassinet</h3>
-                        <p class="mb-1 product-price">R 2,400</p>
-                        <a href="<?= htmlspecialchars($siteBase) ?>pages/seller-profile.php" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
-                          <img src="<?= htmlspecialchars($siteBase) ?>images/gallery/sellers/nadia-p.jpg" class="seller-avatar" alt="Nadia P." width="36" height="36" loading="lazy">
-                          <span class="flex-grow-1">
-                            <span class="d-block font-14 fw-semibold text-body">Nadia P.</span>
-                            <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> 4.8 · 7 reviews</span>
-                          </span>
-                        </a>
-                        <p class="listing-location mb-0 font-14 text-body-secondary mt-2"><i class="bi bi-geo-alt"></i> Ballito, Durban</p>
-                      </div>
-                  </div>
+                <div>
+                  <p class="listing-brand mb-1"><?= htmlspecialchars($item['brand']) ?></p>
+                  <h3 class="product-name mb-1">
+                    <a href="<?= htmlspecialchars($siteBase . $item['url']) ?>" class="text-body text-decoration-none"><?= htmlspecialchars($item['name']) ?></a>
+                  </h3>
+                  <p class="mb-1 product-price"><?= formatPrice($item['price']) ?></p>
+                  <a href="<?= htmlspecialchars($siteBase . $itemSellerUrl) ?>" class="listing-seller d-flex align-items-center gap-2 text-decoration-none">
+                    <img src="<?= htmlspecialchars($siteBase . $item['seller_avatar']) ?>" class="seller-avatar" alt="<?= htmlspecialchars($item['seller']) ?>" width="28" height="28" loading="lazy">
+                    <span class="flex-grow-1">
+                      <span class="d-block font-14 fw-semibold text-body"><?= htmlspecialchars($item['seller']) ?></span>
+                      <span class="seller-rating-mini"><i class="bi bi-star-fill text-warning"></i> <?= number_format($item['seller_rating'], 1) ?> · <?= (int) $item['seller_reviews'] ?> reviews</span>
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>
+    <?php endif; ?>
     
   </main>
   
@@ -710,6 +596,7 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
 
     
   <?php include APP_ROOT . '/views/search-modal.php'; ?>
+  <?php include APP_ROOT . '/views/seller-chat-modal.php'; ?>
   
 
  
@@ -721,7 +608,8 @@ $primaryCategory = $product['categories'][0] ?? 'Browse Listings';
   <script src="<?= htmlspecialchars($siteBase) ?>js/search-modal.js"></script>
   
   <script src="<?= htmlspecialchars($siteBase) ?>js/product-details.js"></script>
-
+  <script src="<?= htmlspecialchars($siteBase) ?>js/seller-chat.js"></script>
+  
   <script src="<?= htmlspecialchars($siteBase) ?>js/main.js"></script>
 </body>
 
