@@ -1,7 +1,8 @@
 # PreLoved Baby
 
 e-commerce site for preloved baby products.
-Live Demo: https://prelovedbaby.infinityfreeapp.com/?i=1
+Website: https://preloved.alwaysdata.net
+Admin login: https://preloved.alwaysdata.net/admin/login.php
 
 Simulation accounts:
 Admin login (Super Admin):
